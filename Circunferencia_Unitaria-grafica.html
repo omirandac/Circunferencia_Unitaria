@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Simulador: C&iacute;rculo Unitario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            width: 100%;
+            text-align: center;
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        header h1 { margin: 0; font-size: 1.3rem; }
+        header p { margin: 5px 0 0 0; font-size: 0.9rem; color: #bdc3c7; }
+        
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .selector-group {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .btn-func {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid #bdc3c7;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-func.active {
+            background: #2c3e50;
+            color: white;
+            border-color: #2c3e50;
+        }
+        
+        canvas {
+            background-color: white;
+            width: 100%;
+            display: block;
+            touch-action: none;
+        }
+
+        #planoCircle {
+            max-width: 320px;
+            margin: 0 auto;
+        }
+
+        #planoGraph {
+            height: 140px;
+            border-top: 1px solid #eee;
+            margin-top: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+            margin-top: 5px;
+            background-color: #fff;
+        }
+
+        input[type=range] {
+            width: 100%;
+            margin: 12px 0;
+            height: 20px;
+            -webkit-appearance: none;
+            background: #e0e0e0;
+            border-radius: 10px;
+            outline: none;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+
+        .data-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            background: #ecf0f1;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-top: 8px;
+        }
+        .data-label { font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; }
+        .data-value { font-weight: bold; color: #2c3e50; font-size: 1.1rem; }
+        .exact-value { color: #e67e22; font-size: 0.85rem; margin-top: 2px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Instituci&oacute;n Educativa Santa Fe</h1>
+        <h1>Gu&iacute;a Grado D&eacute;cimo</h1>
+        <p>Docente: Oswaldo Miranda</p>
+    </header>
+
+    <div class="container">
+        <div class="card">
+            <div class="selector-group">
+                <button class="btn-func active" data-func="sin">Seno</button>
+                <button class="btn-func" data-func="cos">Coseno</button>
+                <button class="btn-func" data-func="tan">Tangente</button>
+            </div>
+            
+            <canvas id="planoCircle" width="320" height="320"></canvas>
+            
+            <canvas id="planoGraph" width="440" height="140"></canvas>
+        </div>
+
+        <div class="card">
+            <label for="notableSelect"><strong>Saltar a &Aacute;ngulo Notable:</strong></label>
+            <select id="notableSelect">
+                <option value="">-- Selecci&oacute;n libre (Usa el deslizador) --</option>
+                <option value="0">0&deg; (0 rad)</option>
+                <option value="30">30&deg; (&pi;/6 rad)</option>
+                <option value="45">45&deg; (&pi;/4 rad)</option>
+                <option value="60">60&deg; (&pi;/3 rad)</option>
+                <option value="90">90&deg; (&pi;/2 rad)</option>
+                <option value="120">120&deg; (2&pi;/3 rad)</option>
+                <option value="135">135&deg; (3&pi;/4 rad)</option>
+                <option value="150">150&deg; (5&pi;/6 rad)</option>
+                <option value="180">180&deg; (&pi; rad)</option>
+                <option value="210">210&deg; (7&pi;/6 rad)</option>
+                <option value="225">225&deg; (5&pi;/4 rad)</option>
+                <option value="240">240&deg; (4&pi;/3 rad)</option>
+                <option value="270">270&deg; (3&pi;/2 rad)</option>
+                <option value="300">300&deg; (5&pi;/3 rad)</option>
+                <option value="315">315&deg; (7&pi;/4 rad)</option>
+                <option value="330">330&deg; (11&pi;/6 rad)</option>
+                <option value="360">360&deg; (2&pi; rad)</option>
+            </select>
+
+            <input type="range" id="angleSlider" min="0" max="360" value="45">
+            <div><strong>&Aacute;ngulo Libre: <span id="angleDisplay">45</span>&deg;</strong></div>
+
+            <div class="data-panel">
+                <div>
+                    <div class="data-label" id="labelX">Coseno (x)</div>
+                    <div class="data-value" id="valX">0.71</div>
+                    <div class="exact-value" id="exactX">Exacto: \u221A2/2</div>
+                </div>
+                <div>
+                    <div class="data-label" id="labelY">Seno (y)</div>
+                    <div class="data-value" id="valY">0.71</div>
+                    <div class="exact-value" id="exactY">Exacto: \u221A2/2</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const cCanvas = document.getElementById('planoCircle');
+            const gCanvas = document.getElementById('planoGraph');
+            const cCtx = cCanvas.getContext('2d');
+            const gCtx = gCanvas.getContext('2d');
+            
+            const slider = document.getElementById('angleSlider');
+            const angleDisplay = document.getElementById('angleDisplay');
+            const notableSelect = document.getElementById('notableSelect');
+            const valX = document.getElementById('valX');
+            const valY = document.getElementById('valY');
+            const exactX = document.getElementById('exactX');
+            const exactY = document.getElementById('exactY');
+            const btns = document.querySelectorAll('.btn-func');
+
+            let currentAngle = 45;
+            let currentFunc = 'sin';
+
+            const cx = cCanvas.width / 2;
+            const cy = cCanvas.height / 2;
+            const R = 110;
+
+            const exactos = {
+                0: { cos: "1", sin: "0", tan: "0" },
+                30: { cos: "\u221A3/2", sin: "1/2", tan: "\u221A3/3" },
+                45: { cos: "\u221A2/2", sin: "\u221A2/2", tan: "1" },
+                60: { cos: "1/2", sin: "\u221A3/2", tan: "\u221A3" },
+                90: { cos: "0", sin: "1", tan: "Indefinido" },
+                120: { cos: "-1/2", sin: "\u221A3/2", tan: "-\u221A3" },
+                135: { cos: "-\u221A2/2", sin: "\u221A2/2", tan: "-1" },
+                150: { cos: "-\u221A3/2", sin: "1/2", tan: "-\u221A3/3" },
+                180: { cos: "-1", sin: "0", tan: "0" },
+                210: { cos: "-\u221A3/2", sin: "-1/2", tan: "\u221A3/3" },
+                225: { cos: "-\u221A2/2", sin: "-\u221A2/2", tan: "1" },
+                240: { cos: "-1/2", sin: "-\u221A3/2", tan: "\u221A3" },
+                270: { cos: "0", sin: "-1", tan: "Indefinido" },
+                300: { cos: "1/2", sin: "-\u221A3/2", tan: "-\u221A3" },
+                315: { cos: "\u221A2/2", sin: "-\u221A2/2", tan: "-1" },
+                330: { cos: "\u221A3/2", sin: "-1/2", tan: "-\u221A3/3" },
+                360: { cos: "1", sin: "0", tan: "0" }
+            };
+
+            btns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    currentFunc = this.getAttribute('data-func');
+                    btns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    renderAll();
+                });
+            });
+
+            notableSelect.addEventListener('change', function() {
+                if(this.value !== "") {
+                    currentAngle = parseInt(this.value);
+                    slider.value = currentAngle;
+                    renderAll();
+                }
+            });
+
+            slider.addEventListener('input', function() {
+                currentAngle = parseInt(this.value);
+                notableSelect.value = exactos[currentAngle] ? currentAngle : "";
+                renderAll();
+            });
+
+            function renderAll() {
+                angleDisplay.innerText = currentAngle;
+                drawCircleStructure();
+                drawFunctionGraph();
+            }
+
+            function drawCircleStructure() {
+                cCtx.clearRect(0, 0, cCanvas.width, cCanvas.height);
+
+                cCtx.strokeStyle = '#bdc3c7';
+                cCtx.lineWidth = 1;
+                cCtx.beginPath();
+                cCtx.moveTo(0, cy); cCtx.lineTo(cCanvas.width, cy);
+                cCtx.moveTo(cx, 0); cCtx.lineTo(cx, cCanvas.height);
+                cCtx.stroke();
+                
+                cCtx.fillStyle = '#7f8c8d';
+                cCtx.font = '10px sans-serif';
+                cCtx.fillText('1', cx + R + 5, cy + 12);
+                cCtx.fillText('-1', cx - R - 15, cy + 12);
+                cCtx.fillText('1', cx + 5, cy - R - 5);
+                cCtx.fillText('-1', cx + 5, cy + R + 12);
+                cCtx.fillText('X', cCanvas.width - 10, cy - 5);
+                cCtx.fillText('Y', cx + 5, 10);
+
+                cCtx.strokeStyle = '#34495e';
+                cCtx.lineWidth = 2;
+                cCtx.beginPath();
+                cCtx.arc(cx, cy, R, 0, 2 * Math.PI);
+                cCtx.stroke();
+
+                let rad = currentAngle * (Math.PI / 180);
+                let cos = Math.cos(rad);
+                let sin = Math.sin(rad);
+                let tan = Math.tan(rad);
+
+                let px = cx + cos * R;
+                let py = cy - sin * R;
+
+                cCtx.lineWidth = 2;
+                
+                // Coseno (Línea punteada azul)
+                cCtx.strokeStyle = '#3498db';
+                cCtx.setLineDash([5, 5]);
+                cCtx.beginPath(); cCtx.moveTo(cx, cy); cCtx.lineTo(px, cy); cCtx.stroke();
+
+                // Seno (Línea punteada roja)
+                cCtx.strokeStyle = '#e74c3c';
+                cCtx.setLineDash([5, 5]);
+                cCtx.beginPath(); cCtx.moveTo(px, cy); cCtx.lineTo(px, py); cCtx.stroke();
+
+                cCtx.setLineDash([]); // Restaurar a línea continua
+
+                if(currentFunc === 'tan' && Math.abs(currentAngle % 180) !== 90) {
+                    cCtx.strokeStyle = '#9b59b6';
+                    cCtx.lineWidth = 2;
+                    cCtx.beginPath();
+                    cCtx.moveTo(cx + R, cy);
+                    cCtx.lineTo(cx + R, cy - tan * R);
+                    cCtx.stroke();
+
+                    cCtx.strokeStyle = '#bdc3c7';
+                    cCtx.setLineDash([3, 3]);
+                    cCtx.beginPath();
+                    cCtx.moveTo(cx, cy);
+                    cCtx.lineTo(cx + R, cy - tan * R);
+                    cCtx.stroke();
+                    cCtx.setLineDash([]);
+                }
+
+                // Radio / Hipotenusa (Línea continua naranja)
+                cCtx.strokeStyle = '#f39c12';
+                cCtx.lineWidth = 2;
+                cCtx.beginPath(); cCtx.moveTo(cx, cy); cCtx.lineTo(px, py); cCtx.stroke();
+
+                // Punto
+                cCtx.fillStyle = '#2c3e50';
+                cCtx.beginPath(); cCtx.arc(px, py, 4, 0, 2*Math.PI); cCtx.fill();
+
+                valX.innerText = cos.toFixed(2);
+                valY.innerText = sin.toFixed(2);
+
+                if(exactos[currentAngle]) {
+                    exactX.innerText = "Exacto: " + exactos[currentAngle].cos;
+                    exactY.innerText = "Exacto: " + exactos[currentAngle].sin;
+                } else {
+                    exactX.innerText = "No notable";
+                    exactY.innerText = "No notable";
+                }
+            }
+
+            function drawFunctionGraph() {
+                gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
+                let gw = gCanvas.width;
+                let gh = gCanvas.height;
+                let midY = gh / 2;
+
+                gCtx.strokeStyle = '#bdc3c7';
+                gCtx.lineWidth = 1;
+                gCtx.beginPath();
+                gCtx.moveTo(0, midY); gCtx.lineTo(gw, midY);
+                gCtx.stroke();
+
+                gCtx.fillStyle = '#95a5a6';
+                gCtx.font = '10px sans-serif';
+                let marcas = [90, 180, 270, 360];
+                marcas.forEach(m => {
+                    let mx = (m / 360) * gw;
+                    gCtx.beginPath();
+                    gCtx.moveTo(mx, midY - 4); gCtx.lineTo(mx, midY + 4);
+                    gCtx.stroke();
+                    gCtx.fillText(m + '\u00B0', mx - 10, midY + 15);
+                });
+
+                gCtx.lineWidth = 2;
+                if(currentFunc === 'sin') gCtx.strokeStyle = '#e74c3c';
+                else if(currentFunc === 'cos') gCtx.strokeStyle = '#3498db';
+                else gCtx.strokeStyle = '#9b59b6';
+
+                gCtx.beginPath();
+                let drawing = false;
+
+                for(let x = 0; x <= gw; x++) {
+                    let deg = (x / gw) * 360;
+                    let r = deg * (Math.PI / 180);
+                    let yVal = 0;
+
+                    if(currentFunc === 'sin') yVal = Math.sin(r);
+                    else if(currentFunc === 'cos') yVal = Math.cos(r);
+                    else if(currentFunc === 'tan') yVal = Math.tan(r);
+
+                    let scale = currentFunc === 'tan' ? gh / 8 : gh / 2.4;
+                    let graphY = midY - (yVal * scale);
+
+                    if (currentFunc === 'tan' && Math.abs(yVal) > 4) {
+                        drawing = false;
+                        continue;
+                    }
+
+                    if (!drawing || x === 0) {
+                        gCtx.moveTo(x, graphY);
+                        drawing = true;
+                    } else {
+                        gCtx.lineTo(x, graphY);
+                    }
+                }
+                gCtx.stroke();
+
+                let currentX = (currentAngle / 360) * gw;
+                let curRad = currentAngle * (Math.PI / 180);
+                let curYVal = 0;
+                if(currentFunc === 'sin') curYVal = Math.sin(curRad);
+                else if(currentFunc === 'cos') curYVal = Math.cos(curRad);
+                else curYVal = Math.tan(curRad);
+
+                let scale = currentFunc === 'tan' ? gh / 8 : gh / 2.4;
+                let currentY = midY - (curYVal * scale);
+
+                if(currentFunc !== 'tan' || Math.abs(curYVal) <= 4) {
+                    gCtx.fillStyle = '#2c3e50';
+                    gCtx.beginPath();
+                    gCtx.arc(currentX, currentY, 4, 0, 2 * Math.PI);
+                    gCtx.fill();
+                }
+            }
+
+            renderAll();
+        });
+    </script>
+</body>
+</html>
