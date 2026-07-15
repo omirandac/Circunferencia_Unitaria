@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Simulador: C&iacute;rculo Unitario</title>
+    <title>Círculo Unitario - Guía y Simulador</title>
     <style>
+  .container { text-align: center; font-family: sans-serif; padding: 20px; }
+        canvas { background: #fdfdfd; border: 1px solid #ddd; border-radius: 8px; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f7f6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             color: #333;
+            line-height: 1.6;
         }
         header {
             background-color: #2c3e50;
@@ -26,174 +26,457 @@
         header h1 { margin: 0; font-size: 1.3rem; }
         header p { margin: 5px 0 0 0; font-size: 0.9rem; color: #bdc3c7; }
         
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 10px;
-            box-sizing: border-box;
+        .tab-container {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            justify-content: center;
+            background-color: #34495e;
+            width: 100%;
         }
-        
-        .card {
+        .tab-btn {
+            background-color: inherit;
+            color: white;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 20px;
+            font-size: 1rem;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+        .tab-btn:hover { background-color: #2c3e50; }
+        .tab-btn.active { background-color: #e74c3c; }
+
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 850px;
+            margin: 20px auto;
+            padding: 25px;
+            box-sizing: border-box;
             background: white;
             border-radius: 8px;
-            padding: 12px;
             box-shadow: 0 3px 6px rgba(0,0,0,0.08);
-            text-align: center;
         }
+        .tab-content.active { display: block; }
 
-        .selector-group {
-            display: flex;
-            gap: 5px;
-            justify-content: center;
-            margin-bottom: 8px;
-        }
-
-        .btn-func {
-            flex: 1;
-            padding: 8px;
-            border: 2px solid #bdc3c7;
-            background: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-
-        .btn-func.active {
-            background: #2c3e50;
-            color: white;
-            border-color: #2c3e50;
-        }
+        /* Estilos de la Guía */
+        .guia-container h2 { color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 5px; }
+        .guia-container h3 { color: #2c3e50; margin-top: 25px; }
+        .guia-container h4 { color: #34495e; margin-top: 20px; font-size: 1.1rem; }
+        .guia-container h5 { color: #34495e; margin-top: 15px; font-size: 1.05rem; }
+        .guia-container p { text-align: justify; margin-bottom: 12px; }
+        .guia-container ul { margin-left: 20px; margin-bottom: 15px; }
         
-        canvas {
-            background-color: white;
-            width: 100%;
-            display: block;
-            touch-action: none;
-        }
-
-        #planoCircle {
-            max-width: 320px;
-            margin: 0 auto;
-        }
-
-        #planoGraph {
-            height: 140px;
-            border-top: 1px solid #eee;
-            margin-top: 5px;
-        }
-
-        select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            font-size: 1rem;
-            margin-top: 5px;
-            background-color: #fff;
-        }
-
-        input[type=range] {
-            width: 100%;
-            margin: 12px 0;
-            height: 20px;
-            -webkit-appearance: none;
-            background: #e0e0e0;
-            border-radius: 10px;
-            outline: none;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #e74c3c;
-            cursor: pointer;
-        }
-
-        .data-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            background: #ecf0f1;
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 1rem;
-            margin-top: 8px;
-        }
+        /* Estilos del Simulador */
+        .simulator-wrapper { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+        .card { background: #fdfdfd; border-radius: 8px; padding: 12px; box-shadow: inset 0 0 4px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
+        .selector-group { display: flex; gap: 5px; justify-content: center; margin-bottom: 8px; }
+        .btn-func { flex: 1; padding: 8px; border: 2px solid #bdc3c7; background: white; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 0.9rem; transition: all 0.2s; }
+        .btn-func.active { background: #2c3e50; color: white; border-color: #2c3e50; }
+        canvas { background-color: white; width: 100%; display: block; touch-action: none; }
+        #planoCircle { max-width: 320px; margin: 0 auto; }
+        #planoGraph { height: 140px; border-top: 1px solid #eee; margin-top: 5px; }
+        select { width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 1rem; margin-top: 5px; background-color: #fff; }
+        input[type=range] { width: 100%; margin: 12px 0; height: 20px; -webkit-appearance: none; background: #e0e0e0; border-radius: 10px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: #e74c3c; cursor: pointer; }
+        .data-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: #ecf0f1; padding: 10px; border-radius: 6px; font-size: 1rem; margin-top: 8px; }
         .data-label { font-size: 0.75rem; color: #7f8c8d; text-transform: uppercase; }
         .data-value { font-weight: bold; color: #2c3e50; font-size: 1.1rem; }
         .exact-value { color: #e67e22; font-size: 0.85rem; margin-top: 2px; }
+        .leyenda-graficas { display: flex; justify-content: center; gap: 15px; font-size: 0.85rem; margin-top: 10px; font-weight: bold; }
+        .leyenda-item { display: flex; align-items: center; gap: 5px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
     </style>
+    <script>
+        MathJax = { tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
     <header>
-        <h1>Instituci&oacute;n Educativa Santa Fe</h1>
-        <h1>Gu&iacute;a Grado D&eacute;cimo</h1>
+        <h1>Institución Educativa Santa Fe</h1>
+        <h1>Matemáticas (Trigonometría) - Grado 10°</h1>
         <p>Docente: Oswaldo Miranda</p>
     </header>
 
-    <div class="container">
-        <div class="card">
-            <div class="selector-group">
-                <button class="btn-func active" data-func="sin">Seno</button>
-                <button class="btn-func" data-func="cos">Coseno</button>
-                <button class="btn-func" data-func="tan">Tangente</button>
-            </div>
+    <div class="tab-container">
+        <button class="tab-btn active" data-target="guia">Guía de Aprendizaje</button>
+        <button class="tab-btn" data-target="simulador">Simulador Interactivo</button>
+    </div>
+
+    <div id="guia" class="tab-content active">
+        <div class="guia-container">
+            <h2>GUÍA DE APRENDIZAJE</h2>
+            <p><strong>Docente:</strong> Oswaldo Miranda<br>
+            <strong>Asignatura:</strong> Matemáticas (Trigonometría) - Grado 10°</p>
+
+            <h3>Capítulo 1: El Círculo Unitario y la Extensión Trigonométrica</h3>
+  <canvas id="vectorCanvas" width="800" height="600"></canvas>
+    
+    <div class="controls">
+        <label>Ángulo θ: </label>
+        <input type="range" id="angleRange" min="0" max="360" step="1" value="45">
+        <span id="angleVal">45°</span>
+    </div>
+
+
+ <script>
+        const canvas = document.getElementById('vectorCanvas');
+        const ctx = canvas.getContext('2d');
+        const angleRange = document.getElementById('angleRange');
+        const angleVal = document.getElementById('angleVal');
+
+        const scale = 150; // Ajustado para ver más cuadrícula
+        const centerX = 400; 
+        const centerY = 300;
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            <canvas id="planoCircle" width="320" height="320"></canvas>
+            // 1. Dibujar cuadrícula
+            ctx.strokeStyle = '#e8e8e8';
+            ctx.lineWidth = 1;
+            for(let i = -10; i <= 10; i++) {
+                ctx.beginPath();
+                ctx.moveTo(centerX + i * (scale/2), 0); ctx.lineTo(centerX + i * (scale/2), 600);
+                ctx.moveTo(0, centerY + i * (scale/2)); ctx.lineTo(800, centerY + i * (scale/2));
+                ctx.stroke();
+            }
+
+            // 2. Ejes
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY); ctx.lineTo(800, centerY); // Eje X
+            ctx.moveTo(centerX, 0); ctx.lineTo(centerX, 600); // Eje Y
+            ctx.stroke();
+
+            // Etiquetas de los ejes
+            ctx.font = '14px Arial';
+            ctx.fillStyle = 'black';
+            ctx.fillText("x", 780, centerY - 10);
+            ctx.fillText("y", centerX + 10, 20);
             
-            <canvas id="planoGraph" width="440" height="140"></canvas>
+            // Marcas de unidad en eje X
+            ctx.fillText("1", centerX + scale - 3, centerY + 20);
+            ctx.fillText("-1", centerX - scale - 8, centerY + 20);
+
+            // 3. Círculo unitario
+            ctx.strokeStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, scale, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // 4. Cálculos
+            const theta = angleRange.value * Math.PI / 180;
+            const x = Math.cos(theta) * scale;
+            const y = Math.sin(theta) * scale;
+
+            // 5. Líneas de proyección (punteadas)
+            ctx.setLineDash([5, 5]);
+            ctx.strokeStyle = '#aaa';
+            ctx.beginPath();
+            ctx.moveTo(centerX + x, centerY - y); ctx.lineTo(centerX + x, centerY);
+            ctx.moveTo(centerX + x, centerY - y); ctx.lineTo(centerX, centerY - y);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 6. Vector principal (negro/rojo como en la imagen)
+            ctx.strokeStyle = '#c0392b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(centerX + x, centerY - y);
+            ctx.stroke();
+
+            // 7. Componentes (azul)
+            ctx.strokeStyle = '#2980b9';
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY); ctx.lineTo(centerX + x, centerY); // x_paralelo
+            ctx.moveTo(centerX + x, centerY); ctx.lineTo(centerX + x, centerY - y); // x_perpendicular
+            ctx.stroke();
+
+            // 8. Etiquetas de texto
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 18px Times New Roman';
+            ctx.fillText("x⃗(x, y)", centerX + x + 20, centerY - y - 20);
+            
+            ctx.font = '14px Arial';
+            ctx.fillText(`(cosθ, sinθ)`, centerX + x + 5, centerY - y - 5);
+            
+            ctx.fillStyle = '#2980b9';
+            ctx.fillText("x⃗∥", centerX + x/2 - 10, centerY + 20);
+            ctx.fillText("x⃗⊥", centerX + x + 5, centerY - y/2);
+        }
+
+        angleRange.oninput = () => {
+            angleVal.textContent = angleRange.value + "°";
+            draw();
+        };
+
+        draw();
+    </script>
+
+            <h4>1.1. Introducción al movimiento cíclico</h4>
+            <p>En el estudio clásico de la geometría, el análisis de los triángulos rectángulos limita los ángulos a un rango estricto entre 0° y 90°, dado que la suma interna de sus ángulos no puede superar los $180^{\circ}$. Sin embargo, la realidad física exige modelos más amplios.</p>
+            <p>Considérese el movimiento de una noria mecánica o la rueda de una bicicleta que gira indefinidamente. Cuando la rueda completa un giro de 360°, el movimiento no se detiene ni el ángulo deja de existir; por el contrario, inicia un nuevo ciclo. Para mapear matemáticamente la posición de un punto que gira en círculos de forma infinita, es necesario abandonar la restricción del triángulo estático y trasladar el análisis a la totalidad del plano cartesiano mediante un nuevo sistema de referencia: el círculo unitario.</p>
+
+            <h4>1.2. Definición y Estructura del Círculo Unitario</h4>
+            <p>El círculo unitario se define como el lugar geométrico de todos los puntos $(x,y)$ en el plano cartesiano cuya distancia al origen $(0,0)$ es exactamente igual a 1 unidad.</p>
+            <p><strong>Ecuación fundamental:</strong> Al aplicar el Teorema de Pitágoras sobre el plano, la relación matemática que rige a este círculo es $x^{2}+y^{2}=1$</p>
+            <p><strong>La transición gráfica:</strong> En este sistema, cualquier triángulo rectángulo en estudio queda "inscrito" dentro del círculo. El vértice del ángulo recto se apoya sobre el eje X, y la hipotenusa conecta el origen $(0,0)$ con un punto exacto en la circunferencia. Dado que el radio del círculo es 1, la hipotenusa siempre tendrá un valor exacto de 1.</p>
+
+            <h4>1.3. Las Coordenadas Trigonométricas (Seno, Coseno y Tangente)</h4>
+            <p>En este modelo, las funciones trigonométricas dejan de ser simples proporciones de lados para convertirse en coordenadas exactas de posición.</p>
+            <ul>
+                <li><strong>a) La Hipotenusa (Línea continua):</strong> Representa el radio del círculo. Su valor es constante e igual a 1.</li>
+                <li><strong>b) El Coseno (Coordenada X):</strong> Representado por la proyección horizontal (la base del triángulo). Sabiendo que $cos(\theta)=\frac{\text{Cateto Adyacente}}{\text{Hipotenusa}}$, y que la hipotenusa es 1, se deduce que $cos(\theta)=\frac{x}{1}$. Por lo tanto, el valor del coseno es exactamente la coordenada horizontal del punto.</li>
+                <li><strong>c) El Seno (Coordenada Y):</strong> Representado por la proyección vertical (la altura del triángulo, usualmente ilustrada con una línea punteada). Sabiendo que $sin(\theta)=\frac{\text{Cateto Opuesto}}{\text{Hipotenusa}}$, se deduce que $sin(\theta)=\frac{y}{1}$. El valor del seno es exactamente la coordenada vertical.</li>
+                <li><strong>d) La Tangente:</strong> Se define como la relación entre la altura y la base del triángulo. En términos de coordenadas, $tan(\theta)=\frac{y}{x}$, lo que equivale algebraicamente a $\frac{sin(\theta)}{cos(\theta)}$.</li>
+            </ul>
+            <p><strong>Punto de atención gráfica:</strong> Al observar la gráfica, el estudiante debe fijarse siempre en el punto exacto donde la hipotenusa toca la circunferencia. Las coordenadas $(x,y)$ de ese único punto dictan de forma absoluta los valores del coseno y del seno para el ángulo dado, determinando además sus signos (positivo o negativo) dependiendo del cuadrante en el que se encuentre.</p>
+            <p><strong>Identidad Fundamental de la Trigonometría:</strong> Si la ecuación del círculo es $x^{2}+y^{2}=1$, y sabemos que $x=cos(\theta)$ e $y=sin(\theta)$, al sustituir obtenemos que $cos^{2}(\theta)+sin^{2}(\theta)=1$.</p>
+
+            <h4>1.4. La Medida Natural de los Ángulos: El Radián</h4>
+
+<div id="radian-explanation" style="margin-top: 50px; text-align: center; border-top: 2px solid #ccc; padding-top: 20px;">
+    <h2>¿Qué es un Radián?</h2>
+    <canvas id="radianCanvas" width="300" height="300"></canvas>
+    <p style="max-width: 600px; margin: 10px auto;">
+        Un <b>radián</b> es el ángulo central de una circunferencia tal que el arco que subtiende tiene una longitud igual a la del radio.
+    </p>
+</div>
+
+
+<script>
+    // Lógica para dibujar el radián estático
+    const radCanvas = document.getElementById('radianCanvas');
+    const rCtx = radCanvas.getContext('2d');
+    const rCenter = 150;
+    const rRadius = 100;
+
+    function drawRadianDef() {
+        // Círculo base
+        rCtx.beginPath();
+        rCtx.arc(rCenter, rCenter, rRadius, 0, Math.PI * 2);
+        rCtx.strokeStyle = '#333';
+        rCtx.stroke();
+
+        // Ángulo de 1 radián (~57.3 grados)
+        const angle = 1; 
+        
+        // Sector circular
+        rCtx.fillStyle = '#d1e8ff';
+        rCtx.beginPath();
+        rCtx.moveTo(rCenter, rCenter);
+        rCtx.arc(rCenter, rCenter, rRadius, -angle, 0);
+        rCtx.closePath();
+        rCtx.fill();
+
+        // Arco azul
+        rCtx.beginPath();
+        rCtx.arc(rCenter, rCenter, rRadius, -angle, 0);
+        rCtx.strokeStyle = '#2980b9';
+        rCtx.lineWidth = 4;
+        rCtx.stroke();
+
+        // Radio
+        rCtx.beginPath();
+        rCtx.moveTo(rCenter, rCenter);
+        rCtx.lineTo(rCenter + rRadius, rCenter);
+        rCtx.stroke();
+
+        // Texto
+        rCtx.fillStyle = '#e67e22';
+        rCtx.font = 'bold 20px Arial';
+        rCtx.fillText("1 Radián", rCenter - 40, rCenter - 20);
+    }
+    
+    drawRadianDef();
+</script>
+
+<div id="unique-radian-viz">
+    <h3>Concepto de Radián</h3>
+    <canvas id="radian-canvas-display" width="400" height="300"></canvas>
+</div>
+
+<script>
+    (function renderRadian() {
+        const canvasElement = document.getElementById('radian-canvas-display');
+        const drawCtx = canvasElement.getContext('2d');
+        
+        // Coordenadas fijas de renderizado
+        const originX = 150, originY = 200, circleRadius = 120;
+
+        // 1. Área de barrido (sombreado)
+        drawCtx.fillStyle = '#fceada';
+        drawCtx.beginPath();
+        drawCtx.moveTo(originX, originY);
+        drawCtx.arc(originX, originY, circleRadius, -1, 0);
+        drawCtx.closePath();
+        drawCtx.fill();
+
+        // 2. Líneas divisorias del ángulo
+        drawCtx.strokeStyle = '#34495e';
+        drawCtx.lineWidth = 3;
+        drawCtx.beginPath();
+        drawCtx.moveTo(originX, originY); drawCtx.lineTo(originX + circleRadius, originY);
+        drawCtx.moveTo(originX, originY); drawCtx.lineTo(originX + circleRadius * Math.cos(-1), originY + circleRadius * Math.sin(-1));
+        drawCtx.stroke();
+
+        // 3. Arco de medida
+        drawCtx.strokeStyle = '#d35400';
+        drawCtx.beginPath();
+        drawCtx.arc(originX, originY, circleRadius, -1, 0);
+        drawCtx.stroke();
+
+        // 4. Etiquetado descriptivo personalizado
+        drawCtx.fillStyle = '#34495e';
+        drawCtx.font = 'bold 16px Arial';
+        drawCtx.fillText("Longitud = Radio", originX + 20, originY + 25);
+        
+        drawCtx.fillStyle = '#d35400';
+        drawCtx.font = 'bold 22px Arial';
+        drawCtx.fillText("1 Radián", originX - 30, originY - 80);
+        drawCtx.font = 'bold 18px Arial';
+        drawCtx.fillText("≈ 57.2958°", originX + 70, originY - 120);
+        
+        // 5. Flecha indicadora de equivalencia
+        drawCtx.beginPath();
+        drawCtx.moveTo(originX + 80, originY - 100);
+        drawCtx.lineTo(originX + 50, originY - 40);
+        drawCtx.strokeStyle = '#d35400';
+        drawCtx.stroke();
+    })();
+</script>
+
+
+            <p>El grado sexagesimal (donde una vuelta se divide arbitrariamente en 360 partes) no es una medida matemática natural. Para realizar cálculos analíticos precisos, se introduce el radián.</p>
+            <p><strong>Definición formal:</strong> El radián es la medida del ángulo central de un círculo cuya longitud de arco (el segmento curvo del borde) es exactamente igual a la longitud del radio del mismo círculo.</p>
+            <p><strong>Deducción de equivalencia:</strong> La fórmula de la circunferencia (el perímetro total) de un círculo es $C=2\cdot\pi\cdot r$. En el círculo unitario, dado que $r=1$, la longitud de la circunferencia completa es exactamente $2\pi$ radianes. Esto demuestra matemáticamente que dar una vuelta completa (360°) equivale a recorrer una distancia angular de $2\pi$ radianes. Por ende, media vuelta (180°) equivale a $\pi$ radianes.</p>
+
+
+
+
+            <h4>1.5. Deducción Geométrica de Ángulos Notables</h4>
+            <p>El uso de la calculadora científica proporciona valores decimales aproximados. Sin embargo, la estructura geométrica del círculo unitario permite deducir los valores exactos (analíticos) para los ángulos notables sin requerir algoritmos de aproximación.</p>
+            
+            <p><strong>Caso 1: El ángulo de 45° ($\frac{\pi}{4}$ rad) - El Triángulo Isósceles</strong><br>
+            Al trazar un ángulo de $45^{\circ}$ dentro del círculo unitario, el triángulo rectángulo resultante posee un segundo ángulo de $45^{\circ}$ (para completar los $180^{\circ}$ internos). Al tener dos ángulos iguales, sus catetos deben ser idénticos. Es decir, $x=y$.<br>
+            Partiendo de la ecuación del círculo: $x^{2}+y^{2}=1$<br>
+            Sustituyendo y por x (ya que son iguales): $x^{2}+x^{2}=1$<br>
+            Sumando los términos: $2x^{2}=1$<br>
+            Despejando $x^{2}$: $x^{2}=\frac{1}{2}$<br>
+            Extrayendo la raíz cuadrada: $x=\frac{1}{\sqrt{2}}$<br>
+            Racionalizando el denominador (multiplicando arriba y abajo por $\sqrt{2}$) se obtiene el valor exacto: $x=\frac{\sqrt{2}}{2}$.<br>
+            Dado que $x=y$, las coordenadas exactas para $45^{\circ}$ son $\left(\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2}\right)$.</p>
+
+            <p><strong>Caso 2: El ángulo de 30° ($\frac{\pi}{6}$ rad) - El Triángulo Equilátero Bisectado</strong><br>
+            Considérese un triángulo equilátero de lados iguales a 1, apoyado sobre el eje X. Al trazar una línea vertical que lo divida exactamente por la mitad, se genera un triángulo rectángulo con ángulos internos de $30^{\circ}, 60^{\circ}$ y $90^{\circ}$.<br>
+            La base original medía 1. Al ser cortada por la mitad, el cateto opuesto al ángulo de $30^{\circ}$ pasa a medir exactamente $\frac{1}{2}$. Por tanto, la coordenada $y=\frac{1}{2}$.<br>
+            Para hallar la base $(x)$, se aplica Pitágoras:<br>
+            $x^{2}+\left(\frac{1}{2}\right)^{2}=1^{2}$<br>
+            $x^{2}+\frac{1}{4}=1 \rightarrow x^{2}=1-\frac{1}{4} \rightarrow x^{2}=\frac{3}{4}$<br>
+            Extrayendo la raíz cuadrada: $x=\frac{\sqrt{3}}{2}$<br>
+            Las coordenadas exactas para $30^{\circ}$ son $\left(\frac{\sqrt{3}}{2},\frac{1}{2}\right)$.<br>
+            <em>Nota: Por simetría geométrica, para el ángulo de 60° ($\frac{\pi}{3}$ rad), los valores de los catetos se invierten, resultando en las coordenadas $\left(\frac{1}{2},\frac{\sqrt{3}}{2}\right)$.</em></p>
+
+            <h4>1.6. Sección de Transferencia y Evaluación Formativa</h4>
+            <h5>1.6.1. Comprensión Conceptual y Sistemas de Medida (Temas 1.1 a 1.4)</h5>
+            <p>a) <strong>Transición al círculo y radianes:</strong> Explique con sus propias palabras por qué el grado sexagesimal $(360^{\circ})$ resulta insuficiente para modelar el giro continuo de un motor. Luego, si una pieza de ese motor gira exactamente $\frac{3\pi}{2}$ radianes, ¿qué fracción de la vuelta completa ha dado y a cuántos grados equivale? Justifique su respuesta basándose en la relación entre el radio y la longitud de arco.</p>
+            <p>b) <strong>La Ecuación Fundamental:</strong> Un punto P se encuentra sobre el borde del círculo unitario en el primer cuadrante y se sabe que su coordenada vertical (seno) es exactamente $\frac{4}{5}$. Utilizando la ecuación general $x^{2}+y^{2}=1$, calcule paso a paso el valor exacto de su coordenada horizontal x (coseno).</p>
+
+            <h5>1.6.2. Aplicación Analítica y Simetría (Tema 1.5)</h5>
+            <p>a) <strong>Cartografía en los Cuadrantes:</strong> Tomando como base la deducción geométrica del triángulo equilátero bisectado (ángulo de $30^{\circ}$), determine cuáles son las coordenadas cartesianas exactas $(x,y)$ de un punto que se ubica a $210^{\circ}$ en el tercer cuadrante. Argumente matemáticamente por qué los signos de ambas coordenadas cambian respecto al primer cuadrante.</p>
+            <p>b) <strong>Comprobación de la Identidad Trigonométrica:</strong> Seleccione las coordenadas deducidas para el ángulo de $45^{\circ} (\frac{\pi}{4}$ rad). Demuestre algebraicamente, elevando los términos al cuadrado y sumando las fracciones, que dichos valores cumplen a la perfección con la identidad $cos^{2}(\theta)+sin^{2}(\theta)=1$.</p>
+
+            <h5>1.6.3. Modelado Crítico y Metacognición</h5>
+            <p>Para culminar el proceso de aprendizaje, responda de forma individual y argumentada:</p>
+            <p>a) <strong>Evolución del Concepto:</strong> ¿Cómo cambió su comprensión de las matemáticas al pasar de calcular catetos aislados en un triángulo estático (donde la suma interna no supera los 180°) a entender el seno y el coseno como coordenadas infinitas en un plano cartesiano?</p>
+            <p>b) <strong>Implementación del Modelo:</strong> Identifique un sistema mecánico, electrónico o natural en su entorno cotidiano (diferente a una rueda de bicicleta o una de la fortuna) cuyo funcionamiento dependa de ciclos repetitivos. ¿De qué manera le serviría conocer las coordenadas exactas de ese ciclo utilizando el modelo del círculo unitario para su posible simulación o diseño?</p>
+            <p>c) <strong>Análisis de Obstáculos Cognitivos:</strong> Indique con precisión qué paso matemático de este capítulo representa el mayor reto para su comprensión. ¿Fue el despeje de incógnitas en la ecuación fundamental, la simplificación de radicales, o la conversión entre grados y radianes, otra?</p>
         </div>
+    </div>
 
-        <div class="card">
-            <label for="notableSelect"><strong>Saltar a &Aacute;ngulo Notable:</strong></label>
-            <select id="notableSelect">
-                <option value="">-- Selecci&oacute;n libre (Usa el deslizador) --</option>
-                <option value="0">0&deg; (0 rad)</option>
-                <option value="30">30&deg; (&pi;/6 rad)</option>
-                <option value="45">45&deg; (&pi;/4 rad)</option>
-                <option value="60">60&deg; (&pi;/3 rad)</option>
-                <option value="90">90&deg; (&pi;/2 rad)</option>
-                <option value="120">120&deg; (2&pi;/3 rad)</option>
-                <option value="135">135&deg; (3&pi;/4 rad)</option>
-                <option value="150">150&deg; (5&pi;/6 rad)</option>
-                <option value="180">180&deg; (&pi; rad)</option>
-                <option value="210">210&deg; (7&pi;/6 rad)</option>
-                <option value="225">225&deg; (5&pi;/4 rad)</option>
-                <option value="240">240&deg; (4&pi;/3 rad)</option>
-                <option value="270">270&deg; (3&pi;/2 rad)</option>
-                <option value="300">300&deg; (5&pi;/3 rad)</option>
-                <option value="315">315&deg; (7&pi;/4 rad)</option>
-                <option value="330">330&deg; (11&pi;/6 rad)</option>
-                <option value="360">360&deg; (2&pi; rad)</option>
-            </select>
-
-            <input type="range" id="angleSlider" min="0" max="360" value="45">
-            <div><strong>&Aacute;ngulo Libre: <span id="angleDisplay">45</span>&deg;</strong></div>
-
-            <div class="data-panel">
-                <div>
-                    <div class="data-label" id="labelX">Coseno (x)</div>
-                    <div class="data-value" id="valX">0.71</div>
-                    <div class="exact-value" id="exactX">Exacto: \u221A2/2</div>
+    <div id="simulador" class="tab-content">
+        <div class="simulator-wrapper">
+            <div class="card">
+                <div class="selector-group">
+                    <button class="btn-func active" data-func="sin">Seno</button>
+                    <button class="btn-func" data-func="cos">Coseno</button>
+                    <button class="btn-func" data-func="tan">Tangente</button>
                 </div>
-                <div>
-                    <div class="data-label" id="labelY">Seno (y)</div>
-                    <div class="data-value" id="valY">0.71</div>
-                    <div class="exact-value" id="exactY">Exacto: \u221A2/2</div>
+                
+                <canvas id="planoCircle" width="320" height="320"></canvas>
+                <canvas id="planoGraph" width="440" height="140"></canvas>
+                
+                <div class="leyenda-graficas">
+                    <div class="leyenda-item"><div class="dot" style="background:#e74c3c;"></div> Seno</div>
+                    <div class="leyenda-item"><div class="dot" style="background:#3498db;"></div> Coseno</div>
+                    <div class="leyenda-item"><div class="dot" style="background:#9b59b6;"></div> Tangente</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <label for="notableSelect"><strong>Saltar a Ángulo Notable:</strong></label>
+                <select id="notableSelect">
+                    <option value="">-- Selección libre (Usa el deslizador) --</option>
+                    <option value="0">0&deg; (0 rad)</option>
+                    <option value="30">30&deg; (&pi;/6 rad)</option>
+                    <option value="45">45&deg; (&pi;/4 rad)</option>
+                    <option value="60">60&deg; (&pi;/3 rad)</option>
+                    <option value="90">90&deg; (&pi;/2 rad)</option>
+                    <option value="120">120&deg; (2&pi;/3 rad)</option>
+                    <option value="135">135&deg; (3&pi;/4 rad)</option>
+                    <option value="150">150&deg; (5&pi;/6 rad)</option>
+                    <option value="180">180&deg; (&pi; rad)</option>
+                    <option value="210">210&deg; (7&pi;/6 rad)</option>
+                    <option value="225">225&deg; (5&pi;/4 rad)</option>
+                    <option value="240">240&deg; (4&pi;/3 rad)</option>
+                    <option value="270">270&deg; (3&pi;/2 rad)</option>
+                    <option value="300">300&deg; (5&pi;/3 rad)</option>
+                    <option value="315">315&deg; (7&pi;/4 rad)</option>
+                    <option value="330">330&deg; (11&pi;/6 rad)</option>
+                    <option value="360">360&deg; (2&pi; rad)</option>
+                </select>
+
+                <input type="range" id="angleSlider" min="0" max="360" value="45">
+                <div><strong>Ángulo Libre: <span id="angleDisplay">45</span>&deg;</strong></div>
+
+                <div class="data-panel">
+                    <div>
+                        <div class="data-label" id="labelX">Coseno (x)</div>
+                        <div class="data-value" id="valX">0.71</div>
+                        <div class="exact-value" id="exactX">Exacto: \u221A2/2</div>
+                    </div>
+                    <div>
+                        <div class="data-label" id="labelY">Seno (y)</div>
+                        <div class="data-value" id="valY">0.71</div>
+                        <div class="exact-value" id="exactY">Exacto: \u221A2/2</div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Lógica de Pestañas
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    btn.classList.add('active');
+                    document.getElementById(btn.getAttribute('data-target')).classList.add('active');
+                });
+            });
+
+            // Lógica del Simulador
             const cCanvas = document.getElementById('planoCircle');
             const gCanvas = document.getElementById('planoGraph');
             const cCtx = cCanvas.getContext('2d');
@@ -299,17 +582,17 @@
 
                 cCtx.lineWidth = 2;
                 
-                // Coseno (L�nea punteada azul)
-                cCtx.strokeStyle = '#3498db';
+                // Coseno
+                cCtx.strokeStyle = '#fffff';
                 cCtx.setLineDash([5, 5]);
                 cCtx.beginPath(); cCtx.moveTo(cx, cy); cCtx.lineTo(px, cy); cCtx.stroke();
 
-                // Seno (L�nea punteada roja)
+                // Seno
                 cCtx.strokeStyle = '#e74c3c';
                 cCtx.setLineDash([5, 5]);
                 cCtx.beginPath(); cCtx.moveTo(px, cy); cCtx.lineTo(px, py); cCtx.stroke();
 
-                cCtx.setLineDash([]); // Restaurar a l�nea continua
+                cCtx.setLineDash([]); 
 
                 if(currentFunc === 'tan' && Math.abs(currentAngle % 180) !== 90) {
                     cCtx.strokeStyle = '#9b59b6';
@@ -328,7 +611,7 @@
                     cCtx.setLineDash([]);
                 }
 
-                // Radio / Hipotenusa (L�nea continua naranja)
+                // Radio
                 cCtx.strokeStyle = '#f39c12';
                 cCtx.lineWidth = 2;
                 cCtx.beginPath(); cCtx.moveTo(cx, cy); cCtx.lineTo(px, py); cCtx.stroke();
@@ -369,59 +652,68 @@
                     gCtx.beginPath();
                     gCtx.moveTo(mx, midY - 4); gCtx.lineTo(mx, midY + 4);
                     gCtx.stroke();
-                    gCtx.fillText(m + '\u00B0', mx - 10, midY + 15);
+                    gCtx.fillText(m + '°', mx - 10, midY + 15);
                 });
 
-                gCtx.lineWidth = 2;
-                if(currentFunc === 'sin') gCtx.strokeStyle = '#e74c3c';
-                else if(currentFunc === 'cos') gCtx.strokeStyle = '#3498db';
-                else gCtx.strokeStyle = '#9b59b6';
+                // Trazar las 3 funciones simultáneamente
+                const funciones = [
+                    { name: 'sin', color: '#e74c3c' },
+                    { name: 'cos', color: '#3498db' },
+                    { name: 'tan', color: '#9b59b6' }
+                ];
 
-                gCtx.beginPath();
-                let drawing = false;
-
-                for(let x = 0; x <= gw; x++) {
-                    let deg = (x / gw) * 360;
-                    let r = deg * (Math.PI / 180);
-                    let yVal = 0;
-
-                    if(currentFunc === 'sin') yVal = Math.sin(r);
-                    else if(currentFunc === 'cos') yVal = Math.cos(r);
-                    else if(currentFunc === 'tan') yVal = Math.tan(r);
-
-                    let scale = currentFunc === 'tan' ? gh / 8 : gh / 2.4;
-                    let graphY = midY - (yVal * scale);
-
-                    if (currentFunc === 'tan' && Math.abs(yVal) > 4) {
-                        drawing = false;
-                        continue;
-                    }
-
-                    if (!drawing || x === 0) {
-                        gCtx.moveTo(x, graphY);
-                        drawing = true;
-                    } else {
-                        gCtx.lineTo(x, graphY);
-                    }
-                }
-                gCtx.stroke();
-
-                let currentX = (currentAngle / 360) * gw;
-                let curRad = currentAngle * (Math.PI / 180);
-                let curYVal = 0;
-                if(currentFunc === 'sin') curYVal = Math.sin(curRad);
-                else if(currentFunc === 'cos') curYVal = Math.cos(curRad);
-                else curYVal = Math.tan(curRad);
-
-                let scale = currentFunc === 'tan' ? gh / 8 : gh / 2.4;
-                let currentY = midY - (curYVal * scale);
-
-                if(currentFunc !== 'tan' || Math.abs(curYVal) <= 4) {
-                    gCtx.fillStyle = '#2c3e50';
+                funciones.forEach(func => {
+                    gCtx.strokeStyle = func.color;
+                    // Resaltar la función activa
+                    gCtx.lineWidth = (func.name === currentFunc) ? 2.5 : 1.0;
                     gCtx.beginPath();
-                    gCtx.arc(currentX, currentY, 4, 0, 2 * Math.PI);
-                    gCtx.fill();
-                }
+                    let drawing = false;
+
+                    for(let x = 0; x <= gw; x++) {
+                        let deg = (x / gw) * 360;
+                        let r = deg * (Math.PI / 180);
+                        let yVal = 0;
+
+                        if (func.name === 'sin') yVal = Math.sin(r);
+                        else if (func.name === 'cos') yVal = Math.cos(r);
+                        else yVal = Math.tan(r);
+
+                        let scale = (func.name === 'tan') ? gh / 8 : gh / 2.4;
+                        let graphY = midY - (yVal * scale);
+
+                        if (func.name === 'tan' && Math.abs(yVal) > 4) {
+                            drawing = false;
+                            continue;
+                        }
+
+                        if (!drawing || x === 0) {
+                            gCtx.moveTo(x, graphY);
+                            drawing = true;
+                        } else {
+                            gCtx.lineTo(x, graphY);
+                        }
+                    }
+                    gCtx.stroke();
+
+                    // Punto sobre la gráfica para cada función
+                    let currentX = (currentAngle / 360) * gw;
+                    let curRad = currentAngle * (Math.PI / 180);
+                    let curYVal = 0;
+                    
+                    if(func.name === 'sin') curYVal = Math.sin(curRad);
+                    else if(func.name === 'cos') curYVal = Math.cos(curRad);
+                    else curYVal = Math.tan(curRad);
+
+                    let ptScale = (func.name === 'tan') ? gh / 8 : gh / 2.4;
+                    let currentY = midY - (curYVal * ptScale);
+
+                    if(func.name !== 'tan' || Math.abs(curYVal) <= 4) {
+                        gCtx.fillStyle = func.color;
+                        gCtx.beginPath();
+                        gCtx.arc(currentX, currentY, (func.name === currentFunc) ? 5 : 3, 0, 2 * Math.PI);
+                        gCtx.fill();
+                    }
+                });
             }
 
             renderAll();
