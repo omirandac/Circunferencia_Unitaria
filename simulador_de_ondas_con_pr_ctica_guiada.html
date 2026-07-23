@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ondas y Sonido - Matemáticas Interactivas</title>
+    
+    <!-- Tailwind CSS para los estilos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX para renderizar fórmulas matemáticas hermosas -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .slider-custom {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 5px;
+            background: #cbd5e1;
+            outline: none;
+        }
+        .slider-custom::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563eb;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .slider-custom::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        canvas {
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            image-rendering: pixelated;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <header class="bg-blue-900 text-white py-6 shadow-md">
+        <div class="max-w-6xl mx-auto px-6 md:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight">Ondas y Sonido <span class="text-blue-300">| Matemáticas</span></h1>
+                <p class="text-sm mt-1 text-blue-200">Guía interactiva: Del Círculo a la Música</p>
+            </div>
+            <div class="text-right border-l-2 border-blue-700 pl-4">
+                <p class="font-semibold text-lg">Prof. Oswaldo Miranda</p>
+                <p class="text-sm text-blue-200"><i class="fa-solid fa-school mr-2"></i>Institución Educativa Santa Fe</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl mx-auto w-full px-6 md:px-8 py-8 flex flex-col gap-8">
+        
+        <!-- SECCIÓN 1: TEORÍA Y EJEMPLOS -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-book-open text-blue-600 mr-2"></i> 1. La Naturaleza del Sonido</h2>
+            <div class="text-slate-700 space-y-4">
+                <p>El sonido que viaja hasta nuestros oídos es, físicamente, aire vibrando. Pero matemáticamente, esa vibración toma una forma geométrica muy específica: <strong>una onda senoidal</strong>. Imagina una rueda de la fortuna girando; si trazamos la altura de una de sus cabinas a medida que pasa el tiempo, obtenemos exactamente esta figura: <em>un círculo desenrollado en el tiempo</em>.</p>
+                
+                <h3 class="text-xl font-bold text-slate-800 mt-6 border-b pb-2">¿Qué son los Hertz (Hz)?</h3>
+                <p>La frecuencia de una onda sonora se mide en <strong>Hertz (Hz)</strong>, que significa "ciclos por segundo". Si una nota musical vibra a 440 Hz (como la nota La central de un piano), significa que las partículas de aire van y vienen 440 veces en un solo segundo. <strong>A mayor cantidad de Hertz, más agudo percibimos el sonido.</strong></p>
+
+                <h3 class="text-xl font-bold text-slate-800 mt-6 border-b pb-2">Ejemplos Prácticos: Diseccionando Ondas</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <!-- Ejemplo Onda Roja -->
+                    <div class="bg-red-50 p-6 rounded-xl border border-red-100 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-red-800 mb-1 text-lg"><i class="fa-solid fa-volume-high mr-2"></i>Onda A (Roja): Fuerte y Grave</h4>
+                            <p class="text-sm text-red-700 mb-4">Gran <strong>Amplitud</strong> (Volumen alto) y Baja <strong>Frecuencia</strong> (Pocos ciclos, sonido grave).</p>
+                        </div>
+                        <svg viewBox="0 0 400 100" class="w-full h-24 overflow-visible my-2">
+                            <line x1="0" y1="50" x2="400" y2="50" stroke="#fca5a5" stroke-width="2" stroke-dasharray="4"/>
+                            <path d="M 0 50 Q 100 -30 200 50 T 400 50" fill="none" stroke="#ef4444" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                        <p class="text-center text-sm text-red-800 font-mono bg-red-100 py-2 rounded mt-2 border border-red-200">y = 4 sen(1x)</p>
+                    </div>
+                    <!-- Ejemplo Onda Azul -->
+                    <div class="bg-blue-50 p-6 rounded-xl border border-blue-100 flex flex-col justify-between">
+                        <div>
+                            <h4 class="font-bold text-blue-800 mb-1 text-lg"><i class="fa-solid fa-volume-low mr-2"></i>Onda B (Azul): Suave y Aguda</h4>
+                            <p class="text-sm text-blue-700 mb-4">Pequeña <strong>Amplitud</strong> (Volumen bajo) y Alta <strong>Frecuencia</strong> (Muchos ciclos, sonido agudo).</p>
+                        </div>
+                        <svg viewBox="0 0 400 100" class="w-full h-24 overflow-visible my-2">
+                            <line x1="0" y1="50" x2="400" y2="50" stroke="#bfdbfe" stroke-width="2" stroke-dasharray="4"/>
+                            <path d="M 0 50 Q 50 20 100 50 T 200 50 T 300 50 T 400 50" fill="none" stroke="#3b82f6" stroke-width="4" stroke-linecap="round"/>
+                        </svg>
+                        <p class="text-center text-sm text-blue-800 font-mono bg-blue-100 py-2 rounded mt-2 border border-blue-200">y = 2 sen(2x)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 2: LABORATORIO INTERACTIVO -->
+        <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-6"><i class="fa-solid fa-flask text-blue-600 mr-2"></i> 2. Laboratorio Interactivo</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Panel Izquierdo: Controles y Teoría -->
+                <section class="lg:col-span-5 flex flex-col gap-6">
+                    
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-slate-800">Controles de la Onda</h3>
+                            <button id="audioToggle" class="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-10 h-10 flex items-center justify-center transition-colors shadow-md">
+                                <i class="fa-solid fa-play ml-1"></i>
+                            </button>
+                        </div>
+
+                        <div class="space-y-5">
+                            <!-- Amplitud -->
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="font-semibold text-sm text-slate-700">Amplitud <span class="text-sky-500 font-bold">(A)</span></label>
+                                    <span id="valA" class="text-sm font-mono bg-slate-100 px-2 rounded">3.0</span>
+                                </div>
+                                <input type="range" id="sliderA" min="0" max="5" step="0.1" value="3" class="slider-custom">
+                                <p class="text-xs text-slate-500 mt-1">Controla el volumen (altura de la onda).</p>
+                            </div>
+
+                            <!-- Frecuencia -->
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="font-semibold text-sm text-slate-700">Frecuencia <span class="text-purple-500 font-bold">(ω)</span></label>
+                                    <span id="valW" class="text-sm font-mono bg-slate-100 px-2 rounded">2.0</span>
+                                </div>
+                                <input type="range" id="sliderW" min="0.5" max="5" step="0.1" value="2" class="slider-custom">
+                                <p class="text-xs text-slate-500 mt-1">Controla el tono (qué tan juntos están los picos).</p>
+                            </div>
+
+                            <!-- Desfase -->
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="font-semibold text-sm text-slate-700">Desfase <span class="text-pink-500 font-bold">(φ)</span></label>
+                                    <span id="valPhi" class="text-sm font-mono bg-slate-100 px-2 rounded">0.0</span>
+                                </div>
+                                <input type="range" id="sliderPhi" min="-3.14" max="3.14" step="0.1" value="0" class="slider-custom">
+                                <p class="text-xs text-slate-500 mt-1">Desplaza la onda en el tiempo (Retardo).</p>
+                            </div>
+
+                            <!-- Desplazamiento Y -->
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <label class="font-semibold text-sm text-slate-700">Desplazamiento <span class="text-green-500 font-bold">(B)</span></label>
+                                    <span id="valB" class="text-sm font-mono bg-slate-100 px-2 rounded">0.0</span>
+                                </div>
+                                <input type="range" id="sliderB" min="-3" max="3" step="0.1" value="0" class="slider-custom">
+                                <p class="text-xs text-slate-500 mt-1">Sube o baja toda la gráfica (Presión base).</p>
+                            </div>
+                        </div>
+
+                        <!-- Salta directo a una nota -->
+                        <div class="mt-6 pt-5 border-t border-slate-100">
+                            <label class="font-semibold text-xs text-slate-600 block mb-2">Salta directo a una nota:</label>
+                            <div class="flex flex-wrap gap-1.5" id="noteButtonsContainer">
+                                <button data-freq="1.0" data-note="Do (262 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Do (262 Hz)</button>
+                                <button data-freq="1.3" data-note="Re (294 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Re (294 Hz)</button>
+                                <button data-freq="1.5" data-note="Mi (330 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Mi (330 Hz)</button>
+                                <button data-freq="1.8" data-note="Fa (349 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Fa (349 Hz)</button>
+                                <button data-freq="2.2" data-note="Sol (392 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Sol (392 Hz)</button>
+                                <button data-freq="2.6" data-note="La (440 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">La (440 Hz)</button>
+                                <button data-freq="3.0" data-note="Si (494 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Si (494 Hz)</button>
+                                <button data-freq="3.5" data-note="Do agudo (523 Hz)" class="note-btn text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-300 transition-all font-medium text-slate-700">Do agudo (523 Hz)</button>
+                            </div>
+                            <button id="listenNoteBtn" class="mt-3 w-full bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold py-2 px-4 rounded-xl transition-all shadow-sm flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-volume-high"></i> Escuchar esta onda
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Notas de Clase -->
+                    <div class="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+                        <h3 class="text-blue-900 font-bold mb-2"><i class="fa-solid fa-book-open mr-2"></i> Notas de Clase</h3>
+                        <ul class="text-sm text-blue-800 space-y-2 list-disc pl-4 marker:text-blue-500">
+                            <li>La onda sinusoidal es un <strong>círculo desenrollado en el tiempo</strong>.</li>
+                            <li>Las partículas de aire son empujadas en ciclos, viajando hasta nuestros tímpanos.</li>
+                            <li><strong>Cancelación de Ruido:</strong> Los audífonos generan una onda idéntica al ruido externo pero desfasada en $\pi$ (media vuelta). Al sumarse en el aire, las presiones se anulan creando silencio.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Panel Derecho: Visualizador -->
+                <section class="lg:col-span-7 flex flex-col gap-6">
+                    
+                    <!-- Contenedor de la Ecuación Dinámica -->
+                    <div class="bg-slate-900 rounded-2xl p-6 shadow-lg text-center relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 via-purple-500 to-pink-500"></div>
+                        <h3 class="text-slate-400 text-sm font-semibold uppercase tracking-wider mb-4">Ecuación General de la Onda</h3>
+                        
+                        <div class="text-slate-300 text-lg mb-2 opacity-70" id="formulaBase"></div>
+                        <div class="text-white text-3xl md:text-4xl py-2" id="formulaDynamic"></div>
+                    </div>
+
+                    <!-- Lienzo del Osciloscopio -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-grow flex flex-col">
+                        <div class="bg-slate-50 border-b border-slate-200 px-4 py-3 flex justify-between items-center">
+                            <span class="font-semibold text-slate-700"><i class="fa-solid fa-wave-square text-blue-500 mr-2"></i> Osciloscopio Virtual</span>
+                            <span class="text-xs font-mono text-slate-500 bg-slate-200 px-2 py-1 rounded" id="timeDisplay">t = 0.00s</span>
+                        </div>
+                        <div class="w-full relative flex-grow min-h-[350px] p-0 bg-slate-900" id="canvasContainer">
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" 
+                                 style="background-image: linear-gradient(#4ade80 1px, transparent 1px), linear-gradient(90deg, #4ade80 1px, transparent 1px); background-size: 40px 40px; background-position: center center;">
+                            </div>
+                            <div class="absolute top-1/2 left-0 w-full h-[1px] bg-green-500 opacity-50 pointer-events-none"></div>
+                            
+                            <canvas id="waveCanvas" class="w-full h-full absolute top-0 left-0 block"></canvas>
+                        </div>
+                    </div>
+
+                </section>
+                
+            </div>
+        </div>
+        
+        <!-- SECCIÓN 4: MI PARTITURA DE ONDAS -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-4">
+            <div class="inline-block bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider mb-3">Etapa 4</div>
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">Mi Partitura de Ondas (borrador digital)</h2>
+            <p class="text-slate-600 text-sm mb-6">Escribe una palabra corta (hasta 6 letras). Asigna una nota y una amplitud a cada letra, y mira tu melodía dibujada, tal como la vas a llevar al papel.</p>
+            
+            <div class="space-y-6">
+                <!-- Input palabra -->
+                <div class="max-w-md bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <label class="block font-bold text-slate-700 text-sm mb-2">Mi palabra</label>
+                    <input type="text" id="scoreWordInput" value="IESAF" maxlength="6" class="w-full font-mono text-lg font-bold tracking-widest text-center uppercase bg-white border border-slate-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Configuración por letra -->
+                <div id="letterConfigs" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                    <!-- Generado dinámicamente -->
+                </div>
+
+                <!-- Visor de Partitura -->
+                <div class="bg-slate-900 rounded-xl p-4 shadow-inner relative overflow-hidden">
+                    <div class="flex justify-between items-center mb-2 px-2">
+                        <span class="text-xs font-mono text-slate-400">PARTITURA VISUALIZADA</span>
+                        <button id="playScoreBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+                            <i class="fa-solid fa-play"></i> Reproducir Melodía
+                        </button>
+                    </div>
+                    <canvas id="scoreCanvas" class="w-full h-40 block rounded-lg bg-slate-950"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECCIÓN 3: PRÁCTICA GUIADA -->
+        <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8 mt-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-slate-800 mb-4"><i class="fa-solid fa-chalkboard-user text-blue-600 mr-2"></i> 3. Práctica Guiada</h2>
+            <div class="text-slate-700 space-y-4">
+                <p>Observa el comportamiento de las ondas en el osciloscopio y responde mentalmente antes de comprobarlo en el simulador:</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 mb-2">Reto 1: Sonido más fuerte</h4>
+                        <p class="text-sm text-slate-600 mb-4">Si queremos que el sonido sea más fuerte (mayor volumen), ¿qué variable matemática debemos aumentar?</p>
+                        <details class="text-sm">
+                            <summary class="cursor-pointer text-blue-600 font-semibold hover:text-blue-800">Ver respuesta</summary>
+                            <div class="mt-2 p-3 bg-blue-50 text-blue-800 rounded border border-blue-100">
+                                La <strong>Amplitud (A)</strong>. En el simulador, aumenta el valor de A y verás cómo la onda crece verticalmente.
+                            </div>
+                        </details>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 mb-2">Reto 2: Nota más aguda</h4>
+                        <p class="text-sm text-slate-600 mb-4">Para cambiar la nota a una más aguda, ¿qué parámetro de la ecuación se modifica?</p>
+                        <details class="text-sm">
+                            <summary class="cursor-pointer text-blue-600 font-semibold hover:text-blue-800">Ver respuesta</summary>
+                            <div class="mt-2 p-3 bg-blue-50 text-blue-800 rounded border border-blue-100">
+                                La <strong>Frecuencia (ω)</strong>. Aumenta la frecuencia y observarás que los ciclos de la onda se comprimen horizontalmente.
+                            </div>
+                        </details>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DESPLEGABLE CON 10 PREGUNTAS INTERACTIVAS (SIN RESPUESTAS, CON FÓRMULAS CLARAS) -->
+                <div class="mt-8 border border-blue-200 rounded-2xl bg-slate-50 overflow-hidden">
+                    <button id="toggleQuizBtn" class="w-full bg-blue-100 hover:bg-blue-200 text-blue-900 font-bold py-4 px-6 flex items-center justify-between transition-colors text-left">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-clipboard-question text-blue-600"></i> Actividades de Práctica: 10 Preguntas sobre Ondas y Sonido</span>
+                        <i id="quizChevron" class="fa-solid fa-chevron-down transition-transform"></i>
+                    </button>
+                    
+                    <div id="quizContent" class="hidden p-6 space-y-6 bg-white border-t border-blue-100">
+                        <p class="text-sm text-slate-600">Responde las siguientes 10 preguntas analizando los conceptos teóricos y experimentales del simulador y la ecuación general <span id="eqDisplayQuiz" class="inline-block px-1"></span>.</p>
+                        
+                        <div class="space-y-6">
+                            <!-- Pregunta 1 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">1. ¿Qué forma geométrica describe matemáticamente una onda sonora pura en el tiempo?</p>
+                                <p class="text-xs text-slate-500 font-mono">Basado en la sección 1: Naturaleza del sonido.</p>
+                            </div>
+
+                            <!-- Pregunta 2 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">2. Si aumentamos la variable <span class="eq-token font-serif italic font-bold text-sky-600">A</span> en la ecuación <span class="inline-eq-1"></span>, ¿qué propiedad física del sonido cambia directamente?</p>
+                                <p class="text-xs text-slate-500 font-mono">Basado en el laboratorio interactivo y controles de Amplitud.</p>
+                            </div>
+
+                            <!-- Pregunta 3 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">3. ¿Qué unidades de medida se utilizan para expresar la frecuencia sonora y qué significado físico tienen?</p>
+                                <p class="text-xs text-slate-500 font-mono">Basado en la definición de Hertz (Hz).</p>
+                            </div>
+
+                            <!-- Pregunta 4 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">4. Entre un sonido de 200 Hz y uno de 800 Hz, ¿cuál de los dos se percibe como más agudo y por qué?</p>
+                                <p class="text-xs text-slate-500 font-mono">Relación entre frecuencia y compresión de picos en el osciloscopio.</p>
+                            </div>
+
+                            <!-- Pregunta 5 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">5. ¿Qué representa el parámetro <span class="eq-token font-serif italic font-bold text-pink-600">\phi</span> (desfase) dentro de una función trigonométrica aplicada a ondas?</p>
+                                <p class="text-xs text-slate-500 font-mono">Efecto en el retardo o desplazamiento temporal de la onda.</p>
+                            </div>
+
+                            <!-- Pregunta 6 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">6. Explica brevemente cómo se aplica el concepto de desfase en la tecnología de cancelación activa de ruido en audífonos.</p>
+                                <p class="text-xs text-slate-500 font-mono">Basado en las notas de clase sobre interferencia destructiva con <span class="inline-eq-phi"></span>.</p>
+                            </div>
+
+                            <!-- Pregunta 7 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">7. ¿Cuál es el rol del término independiente <span class="eq-token font-serif italic font-bold text-green-600">B</span> en la ecuación general de la onda y altera el tono o volumen del sonido?</p>
+                                <p class="text-xs text-slate-500 font-mono">Efecto del desplazamiento vertical en <span class="inline-eq-2"></span>.</p>
+                            </div>
+
+                            <!-- Pregunta 8 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">8. Si en el osciloscopio virtual observas que las ondas se estiran horizontalmente (ciclos más separados), ¿la frecuencia aumentó o disminuyó?</p>
+                                <p class="text-xs text-slate-500 font-mono">Análisis gráfico en el osciloscopio virtual.</p>
+                            </div>
+
+                            <!-- Pregunta 9 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">9. ¿Por qué se dice que el sonido es una onda de presión longitudinal que viaja a través del aire?</p>
+                                <p class="text-xs text-slate-500 font-mono">Naturaleza física de las partículas de aire vibrando.</p>
+                            </div>
+
+                            <!-- Pregunta 10 -->
+                            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200">
+                                <p class="font-semibold text-slate-800 text-sm mb-1">10. Si escribes una palabra en la "Partitura de Ondas", ¿qué relación existe entre cada letra y el resultado melódico visualizado?</p>
+                                <p class="text-xs text-slate-500 font-mono">Construcción y frecuencia asignada por segmentos en la Etapa 4.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const state = {
+            A: 3.0,
+            W: 2.0,
+            Phi: 0.0,
+            B: 0.0,
+            time: 0,
+            playing: false
+        };
+
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const audioToggle = document.getElementById('audioToggle');
+        const formulaBase = document.getElementById('formulaBase');
+        const formulaDynamic = document.getElementById('formulaDynamic');
+        
+        const inputs = {
+            A: document.getElementById('sliderA'),
+            W: document.getElementById('sliderW'),
+            Phi: document.getElementById('sliderPhi'),
+            B: document.getElementById('sliderB')
+        };
+        const displays = {
+            A: document.getElementById('valA'),
+            W: document.getElementById('valW'),
+            Phi: document.getElementById('valPhi'),
+            B: document.getElementById('valB')
+        };
+
+        let audioCtx;
+        let oscillator;
+        let gainNode;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            oscillator = audioCtx.createOscillator();
+            gainNode = audioCtx.createGain();
+
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 220 * state.W; 
+            gainNode.gain.value = (state.A / 5) * 0.2; 
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            state.playing = true;
+            
+            audioToggle.innerHTML = '<i class="fa-solid fa-stop"></i>';
+            audioToggle.classList.replace('bg-blue-600', 'bg-red-500');
+            audioToggle.classList.replace('hover:bg-blue-700', 'hover:bg-red-600');
+        }
+
+        function stopAudio() {
+            if (oscillator) {
+                oscillator.stop();
+                oscillator.disconnect();
+                gainNode.disconnect();
+            }
+            state.playing = false;
+            
+            audioToggle.innerHTML = '<i class="fa-solid fa-play ml-1"></i>';
+            audioToggle.classList.replace('bg-red-500', 'bg-blue-600');
+            audioToggle.classList.replace('hover:bg-red-600', 'hover:bg-blue-700');
+        }
+
+        function updateAudioParams() {
+            if (state.playing && oscillator && gainNode) {
+                oscillator.frequency.setTargetAtTime(220 * state.W, audioCtx.currentTime, 0.1);
+                gainNode.gain.setTargetAtTime((state.A / 5) * 0.2, audioCtx.currentTime, 0.1);
+            }
+        }
+
+        audioToggle.addEventListener('click', () => {
+            if (state.playing) {
+                stopAudio();
+            } else {
+                initAudio();
+            }
+        });
+
+        // Manejo de botones de notas rápidas
+        document.querySelectorAll('.note-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.note-btn').forEach(b => b.classList.remove('border-blue-500', 'bg-blue-50', 'text-blue-700', 'font-bold'));
+                btn.classList.add('border-blue-500', 'bg-blue-50', 'text-blue-700', 'font-bold');
+                
+                const freq = parseFloat(btn.getAttribute('data-freq'));
+                inputs.W.value = freq;
+                state.W = freq;
+                displays.W.innerText = freq.toFixed(1);
+                updateFormula();
+                updateAudioParams();
+            });
+        });
+
+        document.getElementById('listenNoteBtn').addEventListener('click', () => {
+            if (!state.playing) {
+                initAudio();
+            } else {
+                stopAudio();
+                initAudio();
+            }
+        });
+
+        function updateFormula() {
+            if (window.katex) {
+                katex.render("y = A \\sin(\\omega x - \\phi) + B", formulaBase, {
+                    throwOnError: false,
+                    displayMode: false
+                });
+
+                // Renderizar también fórmulas estáticas en el cuestionario de manera impecable
+                const eqQuizEl = document.getElementById('eqDisplayQuiz');
+                if (eqQuizEl) {
+                    katex.render("y = A \\sin(\\omega x - \\phi) + B", eqQuizEl, { throwOnError: false, displayMode: false });
+                }
+                document.querySelectorAll('.inline-eq-1').forEach(el => {
+                    katex.render("y = A \\sin(\\omega x - \\phi) + B", el, { throwOnError: false, displayMode: false });
+                });
+                document.querySelectorAll('.inline-eq-2').forEach(el => {
+                    katex.render("y = A \\sin(\\omega x - \\phi) + B", el, { throwOnError: false, displayMode: false });
+                });
+                document.querySelectorAll('.inline-eq-phi').forEach(el => {
+                    katex.render("\\phi = \\pi", el, { throwOnError: false, displayMode: false });
+                });
+
+                const fA = state.A.toFixed(1);
+                const fW = state.W.toFixed(1);
+                
+                let fPhi = "";
+                if (state.Phi > 0) {
+                    fPhi = `- ${Math.abs(state.Phi).toFixed(1)}`;
+                } else if (state.Phi < 0) {
+                    fPhi = `+ ${Math.abs(state.Phi).toFixed(1)}`;
+                } else {
+                    fPhi = `- 0.0`;
+                }
+
+                let fB = "";
+                if (state.B > 0) {
+                    fB = `+ ${state.B.toFixed(1)}`;
+                } else if (state.B < 0) {
+                    fB = `- ${Math.abs(state.B).toFixed(1)}`;
+                }
+
+                const dynamicStr = `y = \\color{#38bdf8}{${fA}} \\sin(\\color{#a78bfa}{${fW}}x \\color{#f472b6}{${fPhi}}) \\color{#4ade80}{${fB}}`;
+                
+                katex.render(dynamicStr, formulaDynamic, {
+                    throwOnError: false,
+                    displayMode: false
+                });
+            }
+        }
+
+        Object.keys(inputs).forEach(key => {
+            inputs[key].addEventListener('input', (e) => {
+                const val = parseFloat(e.target.value);
+                state[key] = val;
+                displays[key].innerText = val.toFixed(1);
+                
+                updateFormula();
+                updateAudioParams();
+            });
+        });
+
+        function resizeCanvas() {
+            const rect = canvasContainer.getBoundingClientRect();
+            const width = rect.width || canvasContainer.clientWidth || 600;
+            const height = rect.height || canvasContainer.clientHeight || 350;
+            const dpr = window.devicePixelRatio || 1;
+            
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            
+            canvas.logicalWidth = width;
+            canvas.logicalHeight = height;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        function drawOscilloscope() {
+            if (!canvas.logicalWidth || !canvas.logicalHeight) {
+                resizeCanvas();
+            }
+
+            const width = canvas.logicalWidth || canvas.width;
+            const height = canvas.logicalHeight || canvas.height;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            const centerY = height / 2;
+            const pixelsPerUnitY = (height / 2) / 6; 
+            
+            ctx.beginPath();
+            ctx.lineWidth = 4;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#4ade80';
+            ctx.shadowBlur = 10;
+            ctx.shadowColor = '#4ade80';
+
+            const animationSpeed = 3.0;
+
+            for (let px = 0; px < width; px++) {
+                const xMath = (px / width) * 10;
+                const phaseAngle = (state.W * xMath) - state.Phi - (state.time * animationSpeed);
+                const yMath = state.A * Math.sin(phaseAngle) + state.B;
+                const py = centerY - (yMath * pixelsPerUnitY);
+
+                if (px === 0) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            document.getElementById('timeDisplay').innerText = `t = ${state.time.toFixed(2)}s`;
+
+            if (state.playing) {
+                state.time += 0.016;
+            } else {
+                state.time += 0.005;
+            }
+
+            requestAnimationFrame(drawOscilloscope);
+        }
+
+        // --- LÓGICA DE LA PARTITURA DE ONDAS ---
+        const scoreWordInput = document.getElementById('scoreWordInput');
+        const letterConfigsContainer = document.getElementById('letterConfigs');
+        const scoreCanvas = document.getElementById('scoreCanvas');
+        const scoreCtx = scoreCanvas.getContext('2d');
+        const playScoreBtn = document.getElementById('playScoreBtn');
+
+        const noteOptions = [
+            { label: 'Do', freq: 1.0, hz: 262 },
+            { label: 'Re', freq: 1.3, hz: 294 },
+            { label: 'Mi', freq: 1.5, hz: 330 },
+            { label: 'Fa', freq: 1.8, hz: 349 },
+            { label: 'Sol', freq: 2.2, hz: 392 },
+            { label: 'La', freq: 2.6, hz: 440 },
+            { label: 'Si', freq: 3.0, hz: 494 }
+        ];
+
+        const ampOptions = [
+            { label: 'suave (1)', val: 1.5 },
+            { label: 'media (3)', val: 3.0 },
+            { label: 'fuerte (5)', val: 4.5 }
+        ];
+
+        let scoreData = [];
+
+        function initScoreBuilder() {
+            const word = (scoreWordInput.value || "IESAF").toUpperCase().slice(0, 6);
+            scoreWordInput.value = word;
+            letterConfigsContainer.innerHTML = '';
+            scoreData = [];
+
+            const colors = ['#22c55e', '#3b82f6', '#a855f7', '#f97316', '#06b6d4', '#eab308'];
+
+            for (let i = 0; i < word.length; i++) {
+                const char = word[i];
+                const color = colors[i % colors.length];
+
+                scoreData.push({
+                    char: char,
+                    noteIdx: i % noteOptions.length,
+                    ampIdx: 1 // media por defecto
+                });
+
+                const box = document.createElement('div');
+                box.className = 'bg-slate-50 p-3 rounded-xl border border-slate-200 flex flex-col gap-2';
+                box.innerHTML = `
+                    <div class="text-center font-bold text-base" style="color: ${color}">${char}</div>
+                    <select data-index="${i}" data-type="note" class="w-full text-xs bg-white border border-slate-300 rounded p-1">
+                        ${noteOptions.map((n, idx) => `<option value="${idx}" ${idx === (i % noteOptions.length) ? 'selected' : ''}>${n.label}</option>`).join('')}
+                    </select>
+                    <select data-index="${i}" data-type="amp" class="w-full text-xs bg-white border border-slate-300 rounded p-1">
+                        ${ampOptions.map((a, idx) => `<option value="${idx}" ${idx === 1 ? 'selected' : ''}>${a.label}</option>`).join('')}
+                    </select>
+                `;
+                letterConfigsContainer.appendChild(box);
+            }
+
+            // Listeners para selects
+            letterConfigsContainer.querySelectorAll('select').forEach(sel => {
+                sel.addEventListener('change', (e) => {
+                    const idx = parseInt(e.target.getAttribute('data-index'));
+                    const type = e.target.getAttribute('data-type');
+                    const val = parseInt(e.target.value);
+                    if (type === 'note') scoreData[idx].noteIdx = val;
+                    if (type === 'amp') scoreData[idx].ampIdx = val;
+                    drawScore();
+                });
+            });
+
+            drawScore();
+        }
+
+        scoreWordInput.addEventListener('input', initScoreBuilder);
+
+        function drawScore() {
+            const width = scoreCanvas.clientWidth || 600;
+            const height = scoreCanvas.clientHeight || 160;
+            scoreCanvas.width = width * (window.devicePixelRatio || 1);
+            scoreCanvas.height = height * (window.devicePixelRatio || 1);
+            scoreCtx.setTransform(1, 0, 0, 1, 0, 0);
+            scoreCtx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+
+            scoreCtx.clearRect(0, 0, width, height);
+
+            if (scoreData.length === 0) return;
+
+            const segmentWidth = width / scoreData.length;
+            const centerY = height / 2 - 10;
+            const colors = ['#22c55e', '#3b82f6', '#a855f7', '#f97316', '#06b6d4', '#eab308'];
+
+            // Líneas divisorias verticales de cada letra
+            scoreCtx.strokeStyle = 'rgba(255,255,255,0.1)';
+            scoreCtx.lineWidth = 1;
+            scoreCtx.setLineDash([4, 4]);
+            for (let i = 1; i < scoreData.length; i++) {
+                scoreCtx.beginPath();
+                scoreCtx.moveTo(i * segmentWidth, 0);
+                scoreCtx.lineTo(i * segmentWidth, height - 30);
+                scoreCtx.stroke();
+            }
+            scoreCtx.setLineDash([]);
+
+            // Eje central
+            scoreCtx.strokeStyle = 'rgba(255,255,255,0.2)';
+            scoreCtx.beginPath();
+            scoreCtx.moveTo(0, centerY);
+            scoreCtx.lineTo(width, centerY);
+            scoreCtx.stroke();
+
+            // Dibujar ondas por segmento
+            scoreData.forEach((item, idx) => {
+                const note = noteOptions[item.noteIdx];
+                const amp = ampOptions[item.ampIdx].val;
+                const color = colors[idx % colors.length];
+
+                const startX = idx * segmentWidth;
+                const endX = (idx + 1) * segmentWidth;
+
+                scoreCtx.beginPath();
+                scoreCtx.strokeStyle = color;
+                scoreCtx.lineWidth = 3;
+                scoreCtx.lineJoin = 'round';
+
+                for (let px = startX; px <= endX; px++) {
+                    const localX = (px - startX) / segmentWidth; // 0 a 1 en su sección
+                    const angle = localX * note.freq * Math.PI * 4; // Ciclos en el segmento
+                    const yVal = amp * Math.sin(angle);
+                    const py = centerY - (yVal * 12);
+
+                    if (px === startX) {
+                        scoreCtx.moveTo(px, py);
+                    } else {
+                        scoreCtx.lineTo(px, py);
+                    }
+                }
+                scoreCtx.stroke();
+
+                // Etiqueta inferior de cada letra
+                scoreCtx.fillStyle = color;
+                scoreCtx.font = 'bold 12px sans-serif';
+                scoreCtx.textAlign = 'center';
+                scoreCtx.fillText(`${item.char} (${note.label})`, startX + segmentWidth / 2, height - 10);
+            });
+        }
+
+        window.addEventListener('resize', drawScore);
+
+        // Reproductor de partitura
+        let scorePlaying = false;
+        playScoreBtn.addEventListener('click', async () => {
+            if (scorePlaying || scoreData.length === 0) return;
+            scorePlaying = true;
+            playScoreBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Reproduciendo...`;
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const stepDuration = 0.4; // 400ms por letra
+
+            for (let i = 0; i < scoreData.length; i++) {
+                const item = scoreData[i];
+                const note = noteOptions[item.noteIdx];
+                const amp = ampOptions[item.ampIdx].val;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.value = note.hz;
+                gain.gain.value = (amp / 5) * 0.15;
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                await new Promise(r => setTimeout(r, stepDuration * 1000));
+                osc.stop();
+                osc.disconnect();
+            }
+
+            scorePlaying = false;
+            playScoreBtn.innerHTML = `<i class="fa-solid fa-play"></i> Reproducir Melodía`;
+        });
+
+        // --- LÓGICA PARA OCULTAR/MOSTRAR CUESTIONARIO ---
+        const toggleQuizBtn = document.getElementById('toggleQuizBtn');
+        const quizContent = document.getElementById('quizContent');
+        const quizChevron = document.getElementById('quizChevron');
+
+        toggleQuizBtn.addEventListener('click', () => {
+            quizContent.classList.toggle('hidden');
+            quizChevron.classList.toggle('rotate-180');
+        });
+
+        resizeCanvas();
+        updateFormula();
+        initScoreBuilder();
+        requestAnimationFrame(drawOscilloscope);
+    </script>
+</body>
+</html>
