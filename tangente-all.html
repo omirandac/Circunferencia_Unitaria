@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía 10° - Función Tangente Completa</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* Encabezado Institucional */
+        .school-header {
+            background: #1e3a8a;
+            color: white;
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+            border-radius: 12px 12px 0 0;
+            text-align: center;
+            box-sizing: border-box;
+        }
+        .school-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 1.6rem;
+        }
+        .school-header p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #bfdbfe;
+        }
+        .school-header h2 {
+            margin: 15px 0 0 0;
+            font-size: 1.4rem;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        /* Sistema de Pestañas */
+        .tabs {
+            display: flex;
+            width: 100%;
+            max-width: 800px;
+            background: #e2e8f0;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #475569;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .tab-btn:hover { background: #cbd5e1; }
+        .tab-btn.active {
+            background: white;
+            color: #1e3a8a;
+            border-bottom: 3px solid #1e3a8a;
+        }
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 800px;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Contenedores de contenido */
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .text-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            line-height: 1.5;
+        }
+        .text-box h3 { margin: 0 0 10px 0; color: #1e3a8a; }
+        .text-box p { margin: 0 0 10px 0; }
+        .text-box p:last-child { margin: 0; }
+
+        /* Estilos Generales Canvas y Controles */
+        .canvas-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            width: 100%;
+        }
+        canvas {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            max-width: 100%;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        .controls-4col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-top: 15px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        label {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type=number] {
+            width: 100px;
+            padding: 6px;
+            border: 1px solid #94a3b8;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.95rem;
+        }
+        input[type=range] { flex-grow: 1; cursor: pointer; width: 100%; }
+        .val-badge {
+            background: #e2e8f0;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.85rem;
+        }
+        .equation-display {
+            background: #1e3a8a;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-family: monospace;
+            margin-top: 10px;
+        }
+        .stats-bar {
+            background: #1e3a8a;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        /* Estilos Quiz */
+        .quiz-container { display: flex; flex-direction: column; gap: 15px; }
+        .question-box { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option-btn {
+            padding: 12px; border: 2px solid #cbd5e1; background: white;
+            border-radius: 8px; cursor: pointer; font-size: 1rem; text-align: left; transition: all 0.2s;
+        }
+        .option-btn:hover { border-color: #3b82f6; background: #eff6ff; }
+        .option-btn.correct { border-color: #10b981; background: #d1fae5; color: #065f46; }
+        .option-btn.wrong { border-color: #ef4444; background: #fee2e2; color: #991b1b; }
+        .quiz-controls {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 15px;
+        }
+        .next-btn {
+            background: #1e3a8a; color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; font-size: 1rem; cursor: pointer; display: none;
+        }
+        .score-display { font-weight: 600; color: #475569; }
+        .review-item {
+            padding: 10px; margin-bottom: 8px; border-radius: 6px; font-size: 0.9rem;
+        }
+        .review-item.correct { background: #d1fae5; color: #065f46; border: 1px solid #10b981; }
+        .review-item.wrong { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
+
+        @media (max-width: 600px) { 
+            .controls, .controls-4col { grid-template-columns: 1fr; } 
+            .school-header h1 { font-size: 1.3rem; }
+            .tabs { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ENCABEZADO -->
+    <div class="school-header">
+        <h1>Institución Educativa Santa Fe</h1>
+        <p><strong>Docente:</strong> Oswaldo Miranda | <strong>Guía:</strong> Grado 10°</p>
+        <h2>Tangente y su gráfica</h2>
+    </div>
+
+    <!-- PESTAÑAS -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('simuladorTab')">1. Origen y Gráfica Base</button>
+        <button class="tab-btn" onclick="openTab('transformacionesTab')">2. Transformaciones de la Onda</button>
+        <button class="tab-btn" onclick="openTab('actividadTab')">3. Actividad Práctica</button>
+    </div>
+
+    <!-- CONTENIDO 1: SIMULADOR BASE -->
+    <div id="simuladorTab" class="tab-content active">
+        <div class="card text-box">
+            <h3>¿Qué es la función Tangente?</h3>
+            <p>La función tangente matemática se define como la razón entre el seno y el coseno de un ángulo. Geométricamente, en la circunferencia unitaria, representa la longitud del segmento vertical formado desde el eje X hasta el punto donde la prolongación del radio corta una línea vertical (la "pared" o línea tangente) ubicada en x=1.</p>
+            <p>A diferencia de las ondas suaves del seno y coseno, la gráfica de la tangente tiene <strong>asíntotas</strong>: líneas imaginarias verticales donde la función se dispara hacia el infinito, rompiendo la gráfica.</p>
+        </div>
+
+        <div class="card">
+            <div class="canvas-container">
+                <canvas id="circleCanvas" width="240" height="240"></canvas>
+                <canvas id="graphCanvas" width="700" height="350"></canvas>
+            </div>
+            
+            <div class="stats-bar">
+                <span id="statRad">Radianes: 0.00</span>
+                <span id="statTan">Tangente (Y): 0.00</span>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <label>Ángulo (Grados): <span style="font-size: 0.75rem; color: #64748b;">(Admite decimales)</span></label>
+                    <div class="input-row">
+                        <input type="number" id="angleInput" value="45" step="any">
+                        <input type="range" id="angleRange" min="0" max="720" step="0.5" value="45">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label>Zoom (Microscopio): <span class="val-badge" id="valZoom">1.0x</span></label>
+                    <input type="range" id="zoomRange" min="1" max="15" step="0.1" value="1">
+                </div>
+            </div>
+        </div>
+
+        <div class="card text-box">
+            <h3>Los 4 Cuadrantes y el signo de la Tangente</h3>
+            <ul>
+                <li><strong>Cuadrante I (0° a 90°):</strong> Seno (+) y Coseno (+). Tangente <strong>Positiva</strong>.</li>
+                <li><strong>Cuadrante II (90° a 180°):</strong> Seno (+) y Coseno (-). Tangente <strong>Negativa</strong>.</li>
+                <li><strong>Cuadrante III (180° a 270°):</strong> Seno (-) y Coseno (-). Tangente <strong>Positiva</strong>.</li>
+                <li><strong>Cuadrante IV (270° a 360°):</strong> Seno (-) y Coseno (+). Tangente <strong>Negativa</strong>.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CONTENIDO 2: TRANSFORMACIONES (NUEVA PESTAÑA CON NUEVA FORMULA) -->
+    <div id="transformacionesTab" class="tab-content">
+        <div class="card text-box">
+            <h3>Modificando la Ecuación General: y = a tan(b(x - h)) + k</h3>
+            <p>Cada letra dentro de esta estructura cumple una función geométrica específica para deformar o desplazar la gráfica original de la tangente:</p>
+            <ul style="margin: 0; padding-left: 20px;">
+                <li><strong>a (Amplitud o Estiramiento Vertical):</strong> Multiplica el valor de la tangente. Si <strong>a</strong> es grande, la curva se estira más rápido hacia arriba y abajo. Si es negativa, invierte la gráfica (reflejándola verticalmente).</li>
+                <li><strong>b (Frecuencia):</strong> Afecta la velocidad con la que se repiten las ramas y comprime o expande horizontalmente la gráfica. Las nuevas asíntotas ocurren cuando el ángulo dentro del paréntesis es un múltiplo impar de π/2. El periodo de la onda cambia a <strong>π / b</strong>.</li>
+                <li><strong>h (Desplazamiento Horizontal / Desfase):</strong> Mueve toda la gráfica hacia la derecha (si h es positivo) o hacia la izquierda (si h es negativo). Representa el punto exacto donde la curva cruza por cero en su ciclo central.</li>
+                <li><strong>k (Desplazamiento Vertical):</strong> Sube (si k es positivo) o baja (si k es negativo) toda la gráfica a lo largo del eje Y. Modifica el centro de simetría de la onda.</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-top:0; color:#1e3a8a; text-align:center;">Comparador de Transformaciones (0 a 2π)</h3>
+            <p style="text-align:center; font-size:0.9rem; color:#64748b; margin-top:-10px;">En gris opaco: Tangente Base y = tan(x) | En azul brillante: Tangente Modificada y = a tan(b(x - h)) + k</p>
+            
+            <div class="canvas-container">
+                <canvas id="transformCanvas" width="700" height="400"></canvas>
+            </div>
+
+            <div class="equation-display" id="eqDisplay">y = 1 tan(1(x - 0)) + 0</div>
+
+            <div class="controls-4col">
+                <div class="control-group">
+                    <label>a (Estiramiento): <span class="val-badge" id="valA">1.0</span></label>
+                    <input type="range" id="paramA" min="-5" max="5" step="0.1" value="1">
+                </div>
+                <div class="control-group">
+                    <label>b (Frecuencia): <span class="val-badge" id="valB">1.0</span></label>
+                    <input type="range" id="paramB" min="0.1" max="5" step="0.1" value="1">
+                </div>
+                <div class="control-group">
+                    <label>h (Desfase): <span class="val-badge" id="valH">0.0</span></label>
+                    <input type="range" id="paramH" min="-3.14" max="3.14" step="0.1" value="0">
+                </div>
+                <div class="control-group">
+                    <label>k (Vertical): <span class="val-badge" id="valK">0.0</span></label>
+                    <input type="range" id="paramK" min="-5" max="5" step="0.5" value="0">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENIDO 3: ACTIVIDAD PRÁCTICA CON REVISIÓN -->
+    <div id="actividadTab" class="tab-content">
+        <div class="card">
+            <h3 style="color: #1e3a8a; margin-top: 0;">Práctica: Ubicación y Análisis</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">Usa el mini-simulador para ubicar el ángulo antes de responder la pregunta.</p>
+            
+            <div class="quiz-container" id="quizMainContainer">
+                <div style="display: flex; flex-direction: column; align-items: center; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #e2e8f0;">
+                    <canvas id="quizCanvas" width="200" height="200"></canvas>
+                    <div style="width: 100%; margin-top: 15px;">
+                        <label for="quizAngle" style="display: flex; justify-content: space-between;">Ángulo de prueba: <span id="quizAngleVal" class="val-badge">0°</span></label>
+                        <input type="range" id="quizAngle" min="0" max="360" step="1" value="0" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div id="qCounter" style="font-weight: bold; color: #1e3a8a;">Pregunta 1 de 10</div>
+                <div id="qText" class="question-box">Cargando pregunta...</div>
+                
+                <div class="options" id="optionsContainer"></div>
+
+                <div class="quiz-controls">
+                    <div class="score-display">Puntaje: <span id="scoreText">0</span>/10</div>
+                    <button id="nextBtn" class="next-btn" onclick="nextQuestion()">Siguiente Pregunta</button>
+                </div>
+            </div>
+
+            <!-- Contenedor de Resultados Finales con revisión detallada -->
+            <div id="resultsContainer" style="display:none; flex-direction: column; gap: 15px;">
+                <h3 style="color: #1e3a8a; text-align: center; margin-top: 0;">Resumen de Resultados</h3>
+                <div id="finalScoreText" style="text-align: center; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;"></div>
+                <div id="reviewList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+                <button class="next-btn" style="display: block; margin: 20px auto 0 auto;" onclick="restartQuiz()">Reiniciar Actividad</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // ==========================================
+    // LOGICA DE PESTAÑAS
+    // ==========================================
+    function openTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        
+        document.getElementById(tabId).classList.add('active');
+        event.currentTarget.classList.add('active');
+        
+        if(tabId === 'simuladorTab') drawBase();
+        if(tabId === 'transformacionesTab') drawTransformations();
+        if(tabId === 'actividadTab') drawQuiz();
+    }
+
+    // ==========================================
+    // LOGICA DEL SIMULADOR BASE (PESTAÑA 1 - INTACTO)
+    // ==========================================
+    const cCtx = document.getElementById('circleCanvas').getContext('2d');
+    const gCtx = document.getElementById('graphCanvas').getContext('2d');
+    const angleI = document.getElementById('angleInput');
+    const angleR = document.getElementById('angleRange');
+    const zoomR = document.getElementById('zoomRange');
+    
+    angleR.addEventListener('input', (e) => { angleI.value = e.target.value; drawBase(); });
+    angleI.addEventListener('input', (e) => { angleR.value = e.target.value; drawBase(); });
+    zoomR.addEventListener('input', drawBase);
+
+    function formatPi(rad) {
+        let val = rad / Math.PI;
+        if (Math.abs(val) < 0.001) return "0";
+        if (Math.abs(val - 1) < 0.001) return "π";
+        if (Math.abs(val + 1) < 0.001) return "-π";
+        let fracs = [
+            {v:1/6,t:"π/6"}, {v:1/4,t:"π/4"}, {v:1/3,t:"π/3"}, {v:1/2,t:"π/2"},
+            {v:2/3,t:"2π/3"}, {v:3/4,t:"3π/4"}, {v:5/6,t:"5π/6"}, {v:3/2,t:"3π/2"},
+            {v:2,t:"2π"}, {v:5/2,t:"5π/2"}, {v:3,t:"3π"}, {v:7/2,t:"7π/2"}, {v:4,t:"4π"}
+        ];
+        for (let f of fracs) if (Math.abs(val - f.v) < 0.001) return f.t;
+        return val.toFixed(2) + "π";
+    }
+
+    function drawBase() {
+        const deg = parseFloat(angleI.value) || 0;
+        const rad = deg * (Math.PI / 180);
+        const zoom = parseFloat(zoomR.value);
+        
+        let rawTan = Math.tan(rad);
+        let displayTan = rawTan.toFixed(4);
+        if (Math.abs(rawTan) > 10000) { displayTan = rawTan.toExponential(4); }
+        
+        document.getElementById('statRad').innerText = "Radianes: " + formatPi(rad) + " (" + rad.toFixed(4) + ")";
+        document.getElementById('statTan').innerText = "Tangente (Y): " + displayTan;
+        document.getElementById('valZoom').innerText = zoom.toFixed(1) + "x";
+
+        let safeTan = rawTan;
+        if (safeTan > 15000) safeTan = 15000;
+        if (safeTan < -15000) safeTan = -15000;
+        let isAsym = Math.abs((deg % 180) - 90) < 0.000001;
+
+        // CÍRCULO
+        cCtx.clearRect(0, 0, 240, 240);
+        const cX = 80, cY = 120, r = 60;
+        cCtx.strokeStyle = '#cbd5e1'; cCtx.lineWidth = 1;
+        cCtx.beginPath(); cCtx.moveTo(10, cY); cCtx.lineTo(230, cY); cCtx.moveTo(cX, 10); cCtx.lineTo(cX, 230); cCtx.stroke();
+        cCtx.strokeStyle = '#94a3b8'; cCtx.lineWidth = 2;
+        cCtx.beginPath(); cCtx.arc(cX, cY, r, 0, 2*Math.PI); cCtx.stroke();
+        
+        const tX = cX + r;
+        cCtx.strokeStyle = '#ef4444'; cCtx.setLineDash([4,4]);
+        cCtx.beginPath(); cCtx.moveTo(tX, 10); cCtx.lineTo(tX, 230); cCtx.stroke(); cCtx.setLineDash([]);
+        
+        const pX = cX + Math.cos(rad)*r;
+        const pY = cY - Math.sin(rad)*r;
+
+        if (!isAsym && Math.abs(safeTan) < 50) { 
+            cCtx.strokeStyle = '#a855f7'; cCtx.lineWidth = 1.5; cCtx.setLineDash([3,3]);
+            cCtx.beginPath(); cCtx.moveTo(cX, cY); cCtx.lineTo(tX, cY - safeTan*r); cCtx.stroke(); cCtx.setLineDash([]);
+            cCtx.strokeStyle = '#dc2626'; cCtx.lineWidth = 3;
+            cCtx.beginPath(); cCtx.moveTo(tX, cY); cCtx.lineTo(tX, cY - safeTan*r); cCtx.stroke();
+            cCtx.fillStyle = '#dc2626';
+            cCtx.beginPath(); cCtx.arc(tX, cY - safeTan*r, 4, 0, 2*Math.PI); cCtx.fill();
+        }
+        cCtx.strokeStyle = '#3b82f6'; cCtx.lineWidth = 2.5;
+        cCtx.beginPath(); cCtx.moveTo(cX, cY); cCtx.lineTo(pX, pY); cCtx.stroke();
+        cCtx.fillStyle = '#1e3a8a'; cCtx.beginPath(); cCtx.arc(pX, pY, 5, 0, 2*Math.PI); cCtx.fill();
+
+        // GRÁFICA BASE
+        gCtx.clearRect(0, 0, 700, 350);
+        const cW = 700, cH = 350;
+        const sx = 50 * zoom, sy = 30 * zoom;
+        const mapX = (x) => cW/2 + (x - rad) * sx;
+        const mapY = (y) => cH/2 - (y - safeTan) * sy;
+        const minX = rad - (cW/2)/sx, maxX = rad + (cW/2)/sx;
+        const minY = safeTan - (cH/2)/sy, maxY = safeTan + (cH/2)/sy;
+
+        let stepY = zoom > 5 ? 0.5 : (zoom > 2 ? 1 : 2);
+        let startY = Math.floor(minY / stepY) * stepY;
+        gCtx.fillStyle = '#94a3b8'; gCtx.font = '10px sans-serif'; gCtx.textAlign = 'right';
+        for (let y = startY; y <= maxY + stepY; y += stepY) {
+            let py = mapY(y);
+            gCtx.strokeStyle = (Math.abs(y) < 0.01) ? '#94a3b8' : '#f1f5f9';
+            gCtx.lineWidth = (Math.abs(y) < 0.01) ? 2 : 1;
+            gCtx.beginPath(); gCtx.moveTo(0, py); gCtx.lineTo(cW, py); gCtx.stroke();
+            if(Math.abs(y) > 0.01) gCtx.fillText(y.toFixed(1), 35, py + 3);
+        }
+
+        let piDiv = zoom > 4 ? 12 : (zoom > 2 ? 6 : 2);
+        let stepX = Math.PI / piDiv;
+        let startX = Math.floor(minX / stepX) * stepX;
+        gCtx.textAlign = 'center';
+        for (let x = startX; x <= maxX + stepX; x += stepX) {
+            let px = mapX(x);
+            let isAsymptoteLine = Math.abs((x - Math.PI/2) % Math.PI) < 0.01;
+            let isZeroLine = Math.abs(x) < 0.01;
+            gCtx.strokeStyle = isAsymptoteLine ? '#ef4444' : (isZeroLine ? '#94a3b8' : '#f1f5f9');
+            gCtx.lineWidth = isAsymptoteLine ? 1.5 : (isZeroLine ? 2 : 1);
+            if (isAsymptoteLine) gCtx.setLineDash([4,4]);
+            gCtx.beginPath(); gCtx.moveTo(px, 0); gCtx.lineTo(px, cH); gCtx.stroke();
+            gCtx.setLineDash([]);
+            let textY = Math.max(15, Math.min(cH - 10, mapY(0) + 15));
+            gCtx.fillStyle = isAsymptoteLine ? '#ef4444' : '#64748b';
+            if(!isZeroLine || isAsymptoteLine) gCtx.fillText(formatPi(x), px, textY);
+        }
+
+        gCtx.strokeStyle = '#2563eb'; gCtx.lineWidth = 3;
+        gCtx.beginPath();
+        let drawing = false;
+        let res = 0.02 / zoom;
+        for (let x = minX; x <= maxX; x += res) {
+            let y = Math.tan(x);
+            let distToAsym = Math.abs((x - Math.PI/2) % Math.PI);
+            if (distToAsym < 0.05 || distToAsym > Math.PI - 0.05 || y < minY - 10 || y > maxY + 10) {
+                drawing = false; continue;
+            }
+            let px = mapX(x); let py = mapY(y);
+            if (!drawing) { gCtx.moveTo(px, py); drawing = true; } 
+            else { gCtx.lineTo(px, py); }
+        }
+        gCtx.stroke();
+
+        let minDeg = Math.floor(minX * 180 / Math.PI), maxDeg = Math.ceil(maxX * 180 / Math.PI);
+        for (let d = minDeg; d <= maxDeg; d++) {
+            if (d % 30 === 0 || d % 45 === 0) {
+                if ((d % 180) === 90) continue;
+                let rx = d * Math.PI / 180, ty = Math.tan(rx), px = mapX(rx), py = mapY(ty);
+                if (py > 0 && py < cH) { 
+                    gCtx.fillStyle = '#10b981';
+                    gCtx.beginPath(); gCtx.arc(px, py, 4.5, 0, 2*Math.PI); gCtx.fill();
+                }
+            }
+        }
+        if (!isAsym) {
+            gCtx.fillStyle = '#dc2626';
+            gCtx.beginPath(); gCtx.arc(cW/2, cH/2, 6.5, 0, 2*Math.PI); gCtx.fill();
+        }
+    }
+
+    // ==========================================
+    // LOGICA DE TRANSFORMACIONES (PESTAÑA 2 - ACTUALIZADA 0 a 2pi)
+    // ==========================================
+    const tCtx = document.getElementById('transformCanvas').getContext('2d');
+    const paramA = document.getElementById('paramA');
+    const paramB = document.getElementById('paramB');
+    const paramH = document.getElementById('paramH');
+    const paramK = document.getElementById('paramK');
+    
+    [paramA, paramB, paramH, paramK].forEach(p => p.addEventListener('input', drawTransformations));
+
+    function drawTransformations() {
+        const a = parseFloat(paramA.value);
+        const b = parseFloat(paramB.value);
+        const h = parseFloat(paramH.value);
+        const k = parseFloat(paramK.value);
+        
+        document.getElementById('valA').innerText = a.toFixed(1);
+        document.getElementById('valB').innerText = b.toFixed(1);
+        document.getElementById('valH').innerText = h.toFixed(1) + " rad";
+        document.getElementById('valK').innerText = k.toFixed(1);
+        
+        // Formatear ecuación y = a tan(b(x - h)) + k
+        let signH = h >= 0 ? "-" : "+";
+        let signK = k >= 0 ? "+" : "-";
+        document.getElementById('eqDisplay').innerText = `y = ${a} tan(${b}(x ${signH} ${Math.abs(h)})) ${signK} ${Math.abs(k)}`;
+
+        tCtx.clearRect(0, 0, 700, 400);
+        const cW = 700, cH = 400;
+        
+        // Vista fija de 0 a 2*pi en el eje X, Y de -10 a 10
+        const minX = 0, maxX = 2 * Math.PI;
+        const minY = -10, maxY = 10;
+        
+        const mapX = (x) => ((x - minX) / (maxX - minX)) * cW;
+        const mapY = (y) => cH - ((y - minY) / (maxY - minY)) * cH;
+
+        // Cuadrícula Y
+        tCtx.fillStyle = '#94a3b8'; tCtx.font = '10px sans-serif'; tCtx.textAlign = 'right';
+        for (let y = -10; y <= 10; y += 2) {
+            let py = mapY(y);
+            tCtx.strokeStyle = (y === 0) ? '#94a3b8' : '#f1f5f9';
+            tCtx.lineWidth = (y === 0) ? 2 : 1;
+            tCtx.beginPath(); tCtx.moveTo(0, py); tCtx.lineTo(cW, py); tCtx.stroke();
+            if(y !== 0) tCtx.fillText(y, 20, py + 3);
+        }
+
+        // Cuadrícula X (de 0 a 2pi)
+        tCtx.textAlign = 'center';
+        for (let x = 0; x <= 2*Math.PI + 0.01; x += Math.PI/4) {
+            let px = mapX(x);
+            let isZero = Math.abs(x) < 0.01;
+            tCtx.strokeStyle = isZero ? '#94a3b8' : '#f1f5f9';
+            tCtx.lineWidth = isZero ? 2 : 1;
+            tCtx.beginPath(); tCtx.moveTo(px, 0); tCtx.lineTo(px, cH); tCtx.stroke();
+            tCtx.fillText(formatPi(x), px, cH - 5);
+        }
+
+        // Función Auxiliar de Trazado adaptada al intervalo 0 a 2pi
+        function plotTangentInterval(funcY, color, width, isOriginal = false) {
+            tCtx.strokeStyle = color;
+            tCtx.lineWidth = width;
+            tCtx.beginPath();
+            let drawing = false;
+            let res = 0.01;
+            let prevY = 0;
+            
+            for (let x = minX; x <= maxX; x += res) {
+                let y = funcY(x);
+                
+                if (drawing && Math.abs(y - prevY) > 5 && Math.sign(y) !== Math.sign(prevY)) {
+                    drawing = false;
+                    if(!isOriginal) {
+                        tCtx.save();
+                        tCtx.strokeStyle = 'rgba(239, 68, 68, 0.4)';
+                        tCtx.lineWidth = 1;
+                        tCtx.setLineDash([4,4]);
+                        tCtx.beginPath();
+                        let asymX = mapX(x - res/2);
+                        tCtx.moveTo(asymX, 0); tCtx.lineTo(asymX, cH);
+                        tCtx.stroke();
+                        tCtx.restore();
+                    }
+                }
+                
+                if (y < minY - 50 || y > maxY + 50) {
+                    drawing = false;
+                } else {
+                    let px = mapX(x);
+                    let py = mapY(y);
+                    if (!drawing) { tCtx.moveTo(px, py); drawing = true; }
+                    else { tCtx.lineTo(px, py); }
+                }
+                prevY = y;
+            }
+            tCtx.stroke();
+        }
+
+        // Dibujar original fija en color opaco (Gris)
+        plotTangentInterval((x) => Math.tan(x), 'rgba(148, 163, 184, 0.6)', 2.5, true);
+        
+        // Dibujar modificada basada en y = a tan(b(x - h)) + k
+        plotTangentInterval((x) => a * Math.tan(b * (x - h)) + k, '#2563eb', 3, false);
+    }
+
+    // ==========================================
+    // LOGICA DE LA ACTIVIDAD PRÁCTICA CON REVISIÓN (PESTAÑA 3)
+    // ==========================================
+    const quizCanvas = document.getElementById('quizCanvas');
+    const qCtx = quizCanvas.getContext('2d');
+    const quizAngleSlider = document.getElementById('quizAngle');
+    const quizAngleVal = document.getElementById('quizAngleVal');
+
+    quizAngleSlider.addEventListener('input', drawQuiz);
+
+    function drawQuiz() {
+        const deg = parseFloat(quizAngleSlider.value);
+        const rad = deg * (Math.PI / 180);
+        quizAngleVal.innerText = deg + "°";
+        qCtx.clearRect(0, 0, 200, 200);
+        const cx = 100, cy = 100, r = 70;
+
+        qCtx.strokeStyle = '#cbd5e1'; qCtx.lineWidth = 1;
+        qCtx.beginPath(); qCtx.moveTo(10, cy); qCtx.lineTo(190, cy); qCtx.moveTo(cx, 10); qCtx.lineTo(cx, 190); qCtx.stroke();
+        
+        qCtx.strokeStyle = '#94a3b8'; qCtx.lineWidth = 2;
+        qCtx.beginPath(); qCtx.arc(cx, cy, r, 0, 2*Math.PI); qCtx.stroke();
+
+        qCtx.fillStyle = '#cbd5e1'; qCtx.font = '12px sans-serif';
+        qCtx.fillText("I", cx + 30, cy - 30); qCtx.fillText("II", cx - 40, cy - 30);
+        qCtx.fillText("III", cx - 40, cy + 40); qCtx.fillText("IV", cx + 30, cy + 40);
+
+        const px = cx + Math.cos(rad) * r, py = cy - Math.sin(rad) * r;
+        qCtx.strokeStyle = '#3b82f6'; qCtx.lineWidth = 3;
+        qCtx.beginPath(); qCtx.moveTo(cx, cy); qCtx.lineTo(px, py); qCtx.stroke();
+        qCtx.fillStyle = '#dc2626'; qCtx.beginPath(); qCtx.arc(px, py, 6, 0, 2*Math.PI); qCtx.fill();
+    }
+
+    const questions = [
+        { q: "Ubica un ángulo de 45°. ¿En qué cuadrante está y qué signo tiene la tangente?", options: ["Cuadrante I (Positiva)", "Cuadrante II (Negativa)", "Cuadrante III (Positiva)"], ans: 0 },
+        { q: "Mueve el ángulo a 120°. ¿En qué cuadrante se encuentra?", options: ["Cuadrante I", "Cuadrante II", "Cuadrante IV"], ans: 1 },
+        { q: "¿Qué ocurre con la gráfica exactamente en 90°?", options: ["Vale cero", "Vale uno", "Se indefine (es una asíntota)"], ans: 2 },
+        { q: "Ubica el ángulo 225°. ¿En qué cuadrante está?", options: ["Cuadrante II", "Cuadrante III", "Cuadrante IV"], ans: 1 },
+        { q: "Si la tangente es NEGATIVA, ¿en qué cuadrantes podría estar el punto?", options: ["I y III", "II y IV", "I y II"], ans: 1 },
+        { q: "¿Cuál es el valor de la tangente en 180°?", options: ["0", "1", "Infinito"], ans: 0 },
+        { q: "Ubica el ángulo 315°. ¿Qué signo tiene su tangente?", options: ["Positiva", "Negativa", "No tiene signo"], ans: 1 },
+        { q: "¿En qué ángulo del Cuadrante I la tangente vale exactamente 1?", options: ["30°", "45°", "60°"], ans: 1 },
+        { q: "Las asíntotas de la función tangente aparecen por primera vez en 90° y luego en:", options: ["180°", "270°", "360°"], ans: 1 },
+        { q: "¿En qué cuadrantes el seno y el coseno tienen el MISMO signo, haciendo que la tangente sea positiva?", options: ["I y II", "I y III", "II y IV"], ans: 1 }
+    ];
+
+    let currentQ = 0, score = 0, answered = false;
+    let userAnswers = [];
+
+    function loadQuestion() {
+        answered = false;
+        document.getElementById('nextBtn').style.display = 'none';
+        document.getElementById('qCounter').innerText = `Pregunta ${currentQ + 1} de ${questions.length}`;
+        document.getElementById('qText').innerText = questions[currentQ].q;
+        
+        const optsContainer = document.getElementById('optionsContainer');
+        optsContainer.innerHTML = '';
+        questions[currentQ].options.forEach((opt, index) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn'; btn.innerText = opt;
+            btn.onclick = () => selectAnswer(index, btn);
+            optsContainer.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(index, btnSelected) {
+        if (answered) return;
+        answered = true;
+        const correctIndex = questions[currentQ].ans;
+        const buttons = document.querySelectorAll('.option-btn');
+        
+        userAnswers[currentQ] = { user: index, correct: correctIndex, question: questions[currentQ].q, options: questions[currentQ].options };
+
+        if (index === correctIndex) {
+            btnSelected.classList.add('correct');
+            score++; document.getElementById('scoreText').innerText = score;
+        } else {
+            btnSelected.classList.add('wrong');
+            buttons[correctIndex].classList.add('correct');
+        }
+        
+        document.getElementById('nextBtn').style.display = 'block';
+        if(currentQ === questions.length - 1) document.getElementById('nextBtn').innerText = 'Ver Resultados';
+    }
+
+    function nextQuestion() {
+        if (currentQ < questions.length - 1) {
+            currentQ++; loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('quizMainContainer').style.display = 'none';
+        const resContainer = document.getElementById('resultsContainer');
+        resContainer.style.display = 'flex';
+        
+        document.getElementById('finalScoreText').innerText = `Puntaje Total: ${score} de ${questions.length} (${(score/questions.length*100).toFixed(0)}%)`;
+        
+        const reviewList = document.getElementById('reviewList');
+        reviewList.innerHTML = '';
+        
+        userAnswers.forEach((ans, i) => {
+            const item = document.createElement('div');
+            const isCorrect = ans.user === ans.correct;
+            item.className = `review-item ${isCorrect ? 'correct' : 'wrong'}`;
+            
+            let html = `<strong>P${i+1}:</strong> ${ans.q}<br>`;
+            html += `Tu respuesta: <strong>${ans.options[ans.user]}</strong>`;
+            if(!isCorrect) {
+                html += ` | Respuesta correcta: <strong>${ans.options[ans.correct]}</strong>`;
+            }
+            item.innerHTML = html;
+            reviewList.appendChild(item);
+        });
+    }
+
+    function restartQuiz() {
+        currentQ = 0;
+        score = 0;
+        userAnswers = [];
+        document.getElementById('resultsContainer').style.display = 'none';
+        document.getElementById('quizMainContainer').style.display = 'flex';
+        document.getElementById('scoreText').innerText = score;
+        document.getElementById('nextBtn').innerText = 'Siguiente Pregunta';
+        loadQuestion();
+    }
+
+    window.addEventListener('load', () => {
+        drawBase(); drawTransformations(); drawQuiz(); loadQuestion();
+    });
+</script>
+</body>
+</html>
